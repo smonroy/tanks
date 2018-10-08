@@ -11,10 +11,12 @@ var scenes;
             this.Reset();
         }
         Start() {
+            this.Reset();
             this.Main();
         }
         ;
         Update() {
+            this._tank.Update();
         }
         ;
         Destroy() {
@@ -24,10 +26,11 @@ var scenes;
         Reset() {
             this.removeAllChildren();
             this._map = new objects.Map(this._level, this);
+            this._tank = new objects.Rectangle();
+            this.addChild(this._tank);
         }
         ;
         Main() {
-            this._map = new objects.Map(this._level, this);
             this.on("click", () => {
                 if (this._level == 3) {
                     managers.Game.currentState = config.Scene.START;

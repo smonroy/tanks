@@ -5,6 +5,7 @@ var scenes;
             super();
             this.Start();
         }
+        ;
         Start() {
             this._background = new objects.Background();
             this._background.SetMove(true);

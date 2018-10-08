@@ -3,7 +3,7 @@ module scenes {
 
         private _welcomeLabel:objects.Label;
         private _background:objects.Background;
-        private _startButton:objects.Button;
+        private _startButton:objects.Button;;
 
         constructor() {
             super();

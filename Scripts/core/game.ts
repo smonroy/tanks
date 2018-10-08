@@ -16,6 +16,7 @@
         {id:"background1", src:"/Assets/Images/background1.jpg"},
         {id:"background2", src:"/Assets/Images/background2.jpg"},
         {id:"background3", src:"/Assets/Images/background3.jpg"},
+        {id:"tank", src:"/Assets/Images/tank.png"},
         {id:"block_in", src:"/Assets/Images/block_in.png"},
         {id:"block_b1", src:"/Assets/Images/block_b1.png"},
         {id:"block_b2", src:"/Assets/Images/block_b2.png"},
@@ -45,6 +46,13 @@
         currentState = config.Scene.START;
         managers.Game.currentState = currentState;
 
+        document.addEventListener("keydown", (event) => {
+            managers.Input.HandleInput(event);
+        })
+        document.addEventListener("keyup", (event) => {
+            managers.Input.HandleUpInput(event);
+        })
+        
         Main();
     }
 

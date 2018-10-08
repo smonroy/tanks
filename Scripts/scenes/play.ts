@@ -3,6 +3,7 @@ module scenes {
 
         private _map:objects.Map;
         private _level:number;
+        private _tank:objects.Rectangle;
 
         constructor() {
             super();
@@ -16,11 +17,12 @@ module scenes {
         }
 
         public Start():void {
+            this.Reset();
             this.Main();
         };
 
         public Update():void {
-
+            this._tank.Update();
         };
 
         public Destroy():void {
@@ -30,11 +32,11 @@ module scenes {
         public Reset():void {
             this.removeAllChildren();
             this._map = new objects.Map(this._level, this);
+            this._tank = new objects.Rectangle();
+            this.addChild(this._tank);
         };
 
         public Main():void {
-            this._map = new objects.Map(this._level, this);
-
             this.on("click", ()=>{
                 if(this._level == 3) {
                     managers.Game.currentState = config.Scene.START;
