@@ -7,11 +7,12 @@ module objects {
         // public
         public blocks:objects.Block[];
         public blocksNum:number;
+        public tank1:objects.Tank;
+        public tank2:objects.Tank;
 
         // contructor
 
         constructor(level:number, parent:createjs.Container) {
-//            super("background1");
             super(config.MAP_BACKGROUND[level-1]);
 
             this._level = level - 1;
@@ -68,15 +69,36 @@ module objects {
                 const row = grid[yi];
                 for (let xi = 0; xi < row.length; xi++) {
                     const gridElemnt = row[xi];
-                    if(gridElemnt != config.BlockType.__) {
-                        this.blocks[this.blocksNum] = new objects.Block(this._level, gridElemnt, H_OFFSET + (xi * SIZE), V_OFFSET + (yi * SIZE));
-                        this.blocks[this.blocksNum].scaleX = SCALE;
-                        this.blocks[this.blocksNum].scaleY = SCALE;
-                        this._parent.addChild(this.blocks[this.blocksNum]);
-                        this.blocksNum++;
+                    let x = H_OFFSET + (xi * SIZE);
+                    let y = V_OFFSET + (yi * SIZE);
+                    switch (gridElemnt) {
+                        case config.BlockType.__: {
+                            break;
+                        }
+
+                        case config.BlockType.T1: {
+                            this.tank1 = new objects.Tank(1, x, y, SCALE);
+                            break;
+                        }
+                        
+                        case config.BlockType.T2: {
+                            this.tank2 = new objects.Tank(2, x, y, SCALE);
+                            break;
+                        }
+                        
+                        default: {
+                            this.blocks[this.blocksNum] = new objects.Block(this._level, gridElemnt, x, y);
+                            this.blocks[this.blocksNum].scaleX = SCALE;
+                            this.blocks[this.blocksNum].scaleY = SCALE;
+                            this._parent.addChild(this.blocks[this.blocksNum]);
+                            this.blocksNum++;
+                            break;
+                        }
                     }
                 }
             }
+            this._parent.addChild(this.tank1);
+            this._parent.addChild(this.tank2);
         }
 
         public Start():void {

@@ -16,7 +16,8 @@ var scenes;
         }
         ;
         Update() {
-            this._tank.Update();
+            this._map.tank1.Update();
+            this._map.tank2.Update();
         }
         ;
         Destroy() {
@@ -26,8 +27,6 @@ var scenes;
         Reset() {
             this.removeAllChildren();
             this._map = new objects.Map(this._level, this);
-            this._tank = new objects.Rectangle();
-            this.addChild(this._tank);
         }
         ;
         Main() {
