@@ -7,20 +7,20 @@
     let currentScene;
     let currentState;
     let assetManifest = [
-        { id: "startButton", src: "/Assets/Images/startButton.png" },
-        { id: "engineSound", src: "/Assets/audio/engine.ogg" },
-        { id: "thunderSound", src: "/Assets/audio/thunder.ogg" },
-        { id: "yaySound", src: "/Assets/audio/yay.ogg" },
-        { id: "background1", src: "/Assets/Images/background1.jpg" },
-        { id: "background2", src: "/Assets/Images/background2.jpg" },
-        { id: "background3", src: "/Assets/Images/background3.jpg" },
-        { id: "tank", src: "/Assets/Images/tank.png" },
-        { id: "block_in", src: "/Assets/Images/block_in.png" },
-        { id: "block_b1", src: "/Assets/Images/block_b1.png" },
-        { id: "block_b2", src: "/Assets/Images/block_b2.png" },
-        { id: "block_d1", src: "/Assets/Images/block_d1.png" },
-        { id: "block_d2", src: "/Assets/Images/block_d2.png" },
-        { id: "block_d2_2", src: "/Assets/Images/block_d2_2.png" },
+        { id: "startButton", src: "./Assets/Images/startButton.png" },
+        { id: "engineSound", src: "./Assets/audio/engine.ogg" },
+        { id: "thunderSound", src: "./Assets/audio/thunder.ogg" },
+        { id: "yaySound", src: "./Assets/audio/yay.ogg" },
+        { id: "background1", src: "./Assets/Images/background1.jpg" },
+        { id: "background2", src: "./Assets/Images/background2.jpg" },
+        { id: "background3", src: "./Assets/Images/background3.jpg" },
+        { id: "tank", src: "./Assets/Images/tank.png" },
+        { id: "block_in", src: "./Assets/Images/block_in.png" },
+        { id: "block_b1", src: "./Assets/Images/block_b1.png" },
+        { id: "block_b2", src: "./Assets/Images/block_b2.png" },
+        { id: "block_d1", src: "./Assets/Images/block_d1.png" },
+        { id: "block_d2", src: "./Assets/Images/block_d2.png" },
+        { id: "block_d2_2", src: "./Assets/Images/block_d2_2.png" },
     ];
     function Init() {
         assetManager = new createjs.LoadQueue();
