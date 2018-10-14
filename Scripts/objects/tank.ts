@@ -25,10 +25,23 @@ module objects {
         private _isPassable(action:config.ActionEnum, xDelta:number = 0, yDelta:number = 0):boolean {
             let xScalar = 0;
             let yScalar = 1;
+            let forward = this._forward;
+            let righ = this._right;
+
+            if(action == config.ActionEnum.TurnRight) {
+                this._forward = util.Vector2.Rotate(this._forward, this._rotationSpeed);               
+                this._right = util.Vector2.Rotate(this._right, this._rotationSpeed);
+            }
+            if(action == config.ActionEnum.TurnLeft) {
+                this._forward = util.Vector2.Rotate(this._forward, -this._rotationSpeed);               
+                this._right = util.Vector2.Rotate(this._right, -this._rotationSpeed);
+            }
             for (let i:number = 0; i < config.BUMPERS[action].length; i++) {
                 let bumper:util.Vector2 = config.BUMPERS[action][i];
                 if (managers.Game.map.GetCellContent(this.x + xDelta + (this._forward.x * bumper.y) + (this._right.x * bumper.x), 
                                                     this.y + yDelta + (this._forward.y * bumper.y) + (this._right.y * bumper.x)) != config.BlockType.__) {
+                    this._forward = forward;
+                    this._right = righ;
                     return false
                 }
             }
@@ -52,6 +65,12 @@ module objects {
                 if (this._isPassable(config.ActionEnum.Forward, xd, -yd)) {
                     this.x += xd;
                     this.y -= yd;
+                } else {
+                    if (this._isPassable(config.ActionEnum.TurnRight, xd/2, -yd/2)) { 
+                        this.rotation += this._rotationSpeed;
+                    } else if (this._isPassable(config.ActionEnum.TurnLeft, xd/2, -yd/2)) { 
+                        this.rotation -= this._rotationSpeed;
+                    }
                 }
             }
             if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Backward])) {
@@ -60,30 +79,22 @@ module objects {
                 if (this._isPassable(config.ActionEnum.Backward, -xd, yd)) {
                     this.x -= xd;
                     this.y += yd;
+                } else {
+                    if (this._isPassable(config.ActionEnum.TurnRight, -xd/2, yd/2)) { 
+                        this.rotation += this._rotationSpeed;
+                    } else if (this._isPassable(config.ActionEnum.TurnLeft, -xd/2, yd/2)) { 
+                        this.rotation -= this._rotationSpeed;
+                    }
                 }
             }
             if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnRight])) {
-                let forward = this._forward;
-                let righ = this._right;
-                this._forward = util.Vector2.Rotate(this._forward, this._rotationSpeed);               
-                this._right = util.Vector2.Rotate(this._right, this._rotationSpeed);
                 if (this._isPassable(config.ActionEnum.TurnRight)) {
                     this.rotation += this._rotationSpeed;
-                } else {
-                    this._forward = forward;
-                    this._right = righ;
                 }
             }
             if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnLeft])) {
-                let forward = this._forward;
-                let righ = this._right;
-                this._forward = util.Vector2.Rotate(this._forward, -this._rotationSpeed);               
-                this._right = util.Vector2.Rotate(this._right, -this._rotationSpeed); 
                 if (this._isPassable(config.ActionEnum.TurnLeft)) {              
                     this.rotation -= this._rotationSpeed;
-                } else {
-                    this._forward = forward;
-                    this._right = righ;
                 }
             }
 
