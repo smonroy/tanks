@@ -27,6 +27,7 @@ var scenes;
         Reset() {
             this.removeAllChildren();
             this._map = new objects.Map(this._level, this);
+            managers.Game.map = this._map;
         }
         ;
         Main() {

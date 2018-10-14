@@ -3,9 +3,13 @@ module objects {
         // private
         private _parent:createjs.Container;
         private _level:number;
+        private _blockSize:number;  // bock size with scale
+        private _vOffset:number;    // vertical offset of the map
+        private _hOffset:number;    // horizontal offset of the map
 
         // public
         public blocks:objects.Block[];
+        public grid:config.BlockType[][];
         public blocksNum:number;
         public tank1:objects.Tank;
         public tank2:objects.Tank;
@@ -49,28 +53,40 @@ module objects {
             return result;
         }
 
+        private _GetGridColumn(x:number):number {
+            return Math.floor((x - this._hOffset + (this._blockSize / 2)) / this._blockSize);
+        }
+
+        private _GetGridRow(y:number):number {
+            return Math.floor((y - this._vOffset + (this._blockSize / 2)) / this._blockSize);
+        }
+
         // public methods
+        public GetCellContent(x:number, y:number):config.BlockType {
+            return this.grid[this._GetGridRow(y)][this._GetGridColumn(x)];
+        }
+
         public Reset():void {
             this.blocksNum = 0;
             this.blocks = new Array<objects.Block>();
 
-            let grid:config.BlockType[][] = this._PrepareGrid();
+            this.grid = this._PrepareGrid();
 
             const SCALE = Math.min(
-                config.SCREEN_WITH / (grid[0].length) / config.BLOCK_SIZE, 
-                config.SCREEN_HEIGHT / (grid.length) / config.BLOCK_SIZE
+                config.SCREEN_WITH / (this.grid[0].length) / config.BLOCK_SIZE, 
+                config.SCREEN_HEIGHT / (this.grid.length) / config.BLOCK_SIZE
             )
-            const SIZE = config.BLOCK_SIZE * SCALE;
+            this._blockSize = config.BLOCK_SIZE * SCALE;
 
-            const H_OFFSET = ((config.SCREEN_WITH - (SIZE * grid[0].length)) / 2) + (SIZE / 2);
-            const V_OFFSET = ((config.SCREEN_HEIGHT - (SIZE * grid.length)) / 2) + (SIZE / 2);
+            this._hOffset = ((config.SCREEN_WITH - (this._blockSize * this.grid[0].length)) / 2) + (this._blockSize / 2);
+            this._vOffset = ((config.SCREEN_HEIGHT - (this._blockSize * this.grid.length)) / 2) + (this._blockSize / 2);
             
-            for (let yi = 0; yi < grid.length; yi++) {
-                const row = grid[yi];
+            for (let yi = 0; yi < this.grid.length; yi++) {
+                const row = this.grid[yi];
                 for (let xi = 0; xi < row.length; xi++) {
                     const gridElemnt = row[xi];
-                    let x = H_OFFSET + (xi * SIZE);
-                    let y = V_OFFSET + (yi * SIZE);
+                    let x = this._hOffset + (xi * this._blockSize);
+                    let y = this._vOffset + (yi * this._blockSize);
                     switch (gridElemnt) {
                         case config.BlockType.__: {
                             break;
@@ -78,11 +94,13 @@ module objects {
 
                         case config.BlockType.T1: {
                             this.tank1 = new objects.Tank(1, x, y, SCALE);
+                            this.grid[yi][xi] = config.BlockType.__;
                             break;
                         }
                         
                         case config.BlockType.T2: {
                             this.tank2 = new objects.Tank(2, x, y, SCALE);
+                            this.grid[yi][xi] = config.BlockType.__;
                             break;
                         }
                         

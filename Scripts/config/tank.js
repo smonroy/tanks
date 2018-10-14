@@ -26,5 +26,33 @@ var config;
             "ArrowLeft" // TurnLeft
         ]
     ];
+    config.BUMPERS = [
+        [
+            new util.Vector2(-1, 1),
+            new util.Vector2(-0.5, 1),
+            new util.Vector2(0, 1),
+            new util.Vector2(0.5, 1),
+            new util.Vector2(1, 1),
+        ],
+        [
+            new util.Vector2(-1, -1),
+            new util.Vector2(-0.5, -1),
+            new util.Vector2(0, -1),
+            new util.Vector2(0.5, -1),
+            new util.Vector2(1, -1),
+        ],
+        [
+            new util.Vector2(1, 1),
+            new util.Vector2(1, 0.5),
+            new util.Vector2(-1, -0.5),
+            new util.Vector2(-1, -1),
+        ],
+        [
+            new util.Vector2(-1, 1),
+            new util.Vector2(-1, 0.5),
+            new util.Vector2(1, -0.5),
+            new util.Vector2(1, -1),
+        ],
+    ];
 })(config || (config = {}));
 //# sourceMappingURL=tank.js.map

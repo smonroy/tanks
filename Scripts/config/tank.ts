@@ -25,4 +25,33 @@ module config {
             "ArrowLeft"  // TurnLeft
         ]
     ]
+
+    export const BUMPERS:util.Vector2[][] = [
+        [   // Forward
+            new util.Vector2(-1,1),
+            new util.Vector2(-0.5,1),
+            new util.Vector2(0,1),
+            new util.Vector2(0.5,1),
+            new util.Vector2(1,1),
+        ],
+        [   // Backward
+            new util.Vector2(-1,-1),
+            new util.Vector2(-0.5,-1),
+            new util.Vector2(0,-1),
+            new util.Vector2(0.5,-1),
+            new util.Vector2(1,-1),
+        ],
+        [   // Right
+            new util.Vector2(1,1),
+            new util.Vector2(1,0.5),
+            new util.Vector2(-1,-0.5),
+            new util.Vector2(-1,-1),
+        ],
+        [   // Left
+            new util.Vector2(-1,1),
+            new util.Vector2(-1,0.5),
+            new util.Vector2(1,-0.5),
+            new util.Vector2(1,-1),
+        ],
+    ]
 }

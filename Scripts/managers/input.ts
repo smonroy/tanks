@@ -18,12 +18,12 @@ module managers {
             }
         }
         static HandleInput(e: KeyboardEvent) {
-            this.ShowInput(e);
+//            this.ShowInput(e);
             Input.keys[e.code] = true;
 
         }
         static HandleUpInput(e) {
-            this.ShowInput(e, true);
+//            this.ShowInput(e, true);
             Input.keys[e.code] = false;
         }
     }

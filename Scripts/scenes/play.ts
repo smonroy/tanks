@@ -32,6 +32,7 @@ module scenes {
         public Reset():void {
             this.removeAllChildren();
             this._map = new objects.Map(this._level, this);
+            managers.Game.map = this._map;
         };
 
         public Main():void {
