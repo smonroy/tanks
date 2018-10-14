@@ -14,6 +14,17 @@ var objects;
             this._right = new util.Vector2(this.HalfWidth * scale, 0);
             this.Start();
         }
+        _isPassable(action, xDelta = 0, yDelta = 0) {
+            let xScalar = 0;
+            let yScalar = 1;
+            for (let i = 0; i < config.BUMPERS[action].length; i++) {
+                let bumper = config.BUMPERS[action][i];
+                if (managers.Game.map.GetCellContent(this.x + xDelta + (this._forward.x * bumper.y) + (this._right.x * bumper.x), this.y + yDelta + (this._forward.y * bumper.y) + (this._right.y * bumper.x)) != config.BlockType.__) {
+                    return false;
+                }
+            }
+            return true;
+        }
         Reset() {
             throw new Error("Method not implemented.");
         }
@@ -67,19 +78,6 @@ var objects;
         }
         Destroy() {
             throw new Error("Method not implemented.");
-        }
-        _isPassable(action, xDelta = 0, yDelta = 0) {
-            let xScalar = 0;
-            let yScalar = 1;
-            for (let i = 0; i < config.BUMPERS[action].length; i++) {
-                let bumper = config.BUMPERS[action][i];
-                if (managers.Game.map.GetCellContent(this.x + xDelta + (this._forward.x * bumper.y) + (this._right.x * bumper.x), this.y + yDelta + (this._forward.y * bumper.y) + (this._right.y * bumper.x)) != config.BlockType.__) {
-                    return false;
-                }
-            }
-            return true;
-            // return (managers.Game.map.GetCellContent(this.x + xDelta + this._forward.x * yScalar + this._right.x * xScalar, 
-            //                                          this.y + yDelta + this._forward.y * yScalar + this._right.y * xScalar) == config.BlockType.__);
         }
     }
     objects.Tank = Tank;
