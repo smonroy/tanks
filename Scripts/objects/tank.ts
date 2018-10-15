@@ -26,22 +26,20 @@ module objects {
             let xScalar = 0;
             let yScalar = 1;
             let forward = this._forward;
-            let righ = this._right;
+            let right = this._right;
 
             if(action == config.ActionEnum.TurnRight) {
-                this._forward = util.Vector2.Rotate(this._forward, this._rotationSpeed);               
-                this._right = util.Vector2.Rotate(this._right, this._rotationSpeed);
+                forward = util.Vector2.Rotate(this._forward, this._rotationSpeed);               
+                right = util.Vector2.Rotate(this._right, this._rotationSpeed);
             }
             if(action == config.ActionEnum.TurnLeft) {
-                this._forward = util.Vector2.Rotate(this._forward, -this._rotationSpeed);               
-                this._right = util.Vector2.Rotate(this._right, -this._rotationSpeed);
+                forward = util.Vector2.Rotate(this._forward, -this._rotationSpeed);               
+                right = util.Vector2.Rotate(this._right, -this._rotationSpeed);
             }
             for (let i:number = 0; i < config.BUMPERS[action].length; i++) {
                 let bumper:util.Vector2 = config.BUMPERS[action][i];
-                if (managers.Game.map.GetCellContent(this.x + xDelta + (this._forward.x * bumper.y) + (this._right.x * bumper.x), 
-                                                    this.y + yDelta + (this._forward.y * bumper.y) + (this._right.y * bumper.x)) != config.BlockType.__) {
-                    this._forward = forward;
-                    this._right = righ;
+                if (managers.Game.map.GetCellContent(this.x + xDelta + (forward.x * bumper.y) + (right.x * bumper.x), 
+                                                     this.y + yDelta + (forward.y * bumper.y) + (right.y * bumper.x)) != config.BlockType.__) {
                     return false
                 }
             }
@@ -52,49 +50,69 @@ module objects {
             throw new Error("Method not implemented.");
         }
 
+        private _rotate(rotation:number) {
+            this.rotation += rotation;
+            this._forward = util.Vector2.Rotate(this._forward, rotation);               
+            this._right = util.Vector2.Rotate(this._right, rotation);
+        }
+
         public Start(): void {
             this.regX = this.HalfWidth;
             this.regY = this.HalfHeight;
         }
 
         public Update(): void {
+            let xd = this._speed * Math.sin(this.rotation * Math.PI / 180);
+            let yd = this._speed * Math.cos(this.rotation * Math.PI / 180);
             
             if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Forward])) {
-                let xd = this._speed * Math.sin(this.rotation * Math.PI / 180);
-                let yd = this._speed * Math.cos(this.rotation * Math.PI / 180);
                 if (this._isPassable(config.ActionEnum.Forward, xd, -yd)) {
                     this.x += xd;
                     this.y -= yd;
                 } else {
                     if (this._isPassable(config.ActionEnum.TurnRight, xd/2, -yd/2)) { 
-                        this.rotation += this._rotationSpeed;
+                        this._rotate(this._rotationSpeed);
                     } else if (this._isPassable(config.ActionEnum.TurnLeft, xd/2, -yd/2)) { 
-                        this.rotation -= this._rotationSpeed;
+                        this._rotate(-this._rotationSpeed);
                     }
                 }
             }
             if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Backward])) {
-                let xd = this._speed * Math.sin(this.rotation * Math.PI / 180);
-                let yd = this._speed * Math.cos(this.rotation * Math.PI / 180);
                 if (this._isPassable(config.ActionEnum.Backward, -xd, yd)) {
                     this.x -= xd;
                     this.y += yd;
                 } else {
                     if (this._isPassable(config.ActionEnum.TurnRight, -xd/2, yd/2)) { 
-                        this.rotation += this._rotationSpeed;
+                        this._rotate(this._rotationSpeed);
                     } else if (this._isPassable(config.ActionEnum.TurnLeft, -xd/2, yd/2)) { 
-                        this.rotation -= this._rotationSpeed;
+                        this._rotate(-this._rotationSpeed);
                     }
                 }
             }
             if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnRight])) {
                 if (this._isPassable(config.ActionEnum.TurnRight)) {
-                    this.rotation += this._rotationSpeed;
+                    this._rotate(this._rotationSpeed);
+                } else {
+                    if (this._isPassable(config.ActionEnum.TurnRight, xd/2, -yd/2)) {
+                        this.x += xd/2;
+                        this.y -= yd/2;
+                    } else if (this._isPassable(config.ActionEnum.TurnRight, -xd/2, yd/2)) {
+                        this.x -= xd/2;
+                        this.y += yd/2;
+                    }
                 }
             }
             if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnLeft])) {
-                if (this._isPassable(config.ActionEnum.TurnLeft)) {              
-                    this.rotation -= this._rotationSpeed;
+                if (this._isPassable(config.ActionEnum.TurnLeft)) {  
+                    this._rotate(-this._rotationSpeed);            
+                } else {
+                    if (this._isPassable(config.ActionEnum.TurnLeft, xd/2, -yd/2)) {
+                        this.x += xd/2;
+                        this.y -= yd/2;
+                    } else if (this._isPassable(config.ActionEnum.TurnLeft, -xd/2, yd/2)) {
+                        this.x -= xd/2;
+                        this.y += yd/2;
+                    }
                 }
             }
 
