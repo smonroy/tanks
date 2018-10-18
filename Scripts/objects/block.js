@@ -1,12 +1,11 @@
 var objects;
 (function (objects) {
     class Block extends objects.GameObject {
-        // private
-        // public
         // contructor
-        constructor(level, type, x, y) {
-            let image_random = Math.floor(Math.random() * config.IMAGES[level][type].length);
-            super(config.IMAGES[level][type][image_random]);
+        constructor(level, blockType, x, y) {
+            let image_random = Math.floor(Math.random() * config.IMAGES[level][blockType].length);
+            super(config.IMAGES[level][blockType][image_random]);
+            this.blockType = blockType;
             this.x = x;
             this.y = y;
             this.regX = this.HalfWidth;
@@ -23,6 +22,7 @@ var objects;
         Update() {
         }
         Destroy() {
+            managers.Game.currentScene.removeChild(this);
         }
     }
     objects.Block = Block;
