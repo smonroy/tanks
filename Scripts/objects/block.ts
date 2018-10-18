@@ -1,15 +1,17 @@
 module objects {
     export class Block extends objects.GameObject {
         // private
-
+        
         // public
-
+        public blockType:config.BlockType;
+        
         // contructor
 
-        constructor(level:number, type:config.BlockType, x:number, y:number) {
-            let image_random = Math.floor(Math.random() * config.IMAGES[level][type].length);
-            super(config.IMAGES[level][type][image_random]);
+        constructor(level:number, blockType:config.BlockType, x:number, y:number) {
+            let image_random = Math.floor(Math.random() * config.IMAGES[level][blockType].length);
+            super(config.IMAGES[level][blockType][image_random]);
 
+            this.blockType = blockType;
             this.x = x;
             this.y = y;
 
@@ -34,7 +36,7 @@ module objects {
         }
 
         public Destroy():void {
-            
+            managers.Game.currentScene.removeChild(this);
         }
     }
 }

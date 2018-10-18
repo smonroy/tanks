@@ -6,6 +6,7 @@ module scenes {
 
         constructor() {
             super();
+            managers.Game.currentScene = this;
             this._level = 1;
             this.Start();
         }

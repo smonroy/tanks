@@ -44,17 +44,37 @@ var objects;
         }
         // public methods
         GetCellContent(x, y) {
-            return this.grid[this._GetGridRow(y)][this._GetGridColumn(x)];
+            let row = this._GetGridRow(y);
+            if (row < 0 || row >= this.blocks.length) {
+                return null;
+            }
+            let column = this._GetGridColumn(x);
+            if (column < 0 || column >= this.blocks[row].length) {
+                return null;
+            }
+            return this.grid[row][column];
+        }
+        GetBlock(x, y) {
+            return this.blocks[this._GetGridRow(y)][this._GetGridColumn(x)];
+        }
+        DestroyBlock(x, y) {
+            let row = this._GetGridRow(y);
+            let column = this._GetGridColumn(x);
+            this.grid[row][column] = config.BlockType.__;
+            managers.Game.currentScene.removeChild(this.blocks[row][column]);
         }
         Reset() {
-            this.blocksNum = 0;
-            this.blocks = new Array();
             this.grid = this._PrepareGrid();
+            for (let i = 0; i < this.grid.length; i++) {
+                this.blocks;
+            }
             const SCALE = Math.min(config.SCREEN_WITH / (this.grid[0].length) / config.BLOCK_SIZE, config.SCREEN_HEIGHT / (this.grid.length) / config.BLOCK_SIZE);
             this._blockSize = config.BLOCK_SIZE * SCALE;
             this._hOffset = ((config.SCREEN_WITH - (this._blockSize * this.grid[0].length)) / 2) + (this._blockSize / 2);
             this._vOffset = ((config.SCREEN_HEIGHT - (this._blockSize * this.grid.length)) / 2) + (this._blockSize / 2);
+            this.blocks = new Array();
             for (let yi = 0; yi < this.grid.length; yi++) {
+                this.blocks[yi] = new Array();
                 const row = this.grid[yi];
                 for (let xi = 0; xi < row.length; xi++) {
                     const gridElemnt = row[xi];
@@ -75,11 +95,11 @@ var objects;
                             break;
                         }
                         default: {
-                            this.blocks[this.blocksNum] = new objects.Block(this._level, gridElemnt, x, y);
-                            this.blocks[this.blocksNum].scaleX = SCALE;
-                            this.blocks[this.blocksNum].scaleY = SCALE;
-                            this._parent.addChild(this.blocks[this.blocksNum]);
-                            this.blocksNum++;
+                            let block = new objects.Block(this._level, gridElemnt, x, y);
+                            block.scaleX = SCALE;
+                            block.scaleY = SCALE;
+                            this.blocks[yi][xi] = block;
+                            this._parent.addChild(block);
                             break;
                         }
                     }
