@@ -8,14 +8,12 @@ module objects {
         private _hOffset:number;    // horizontal offset of the map
 
         // public
-        public blocks:objects.Block[];
         public grid:config.BlockType[][];
-        public blocksNum:number;
+        public blocks:objects.Block[][];
         public tank1:objects.Tank;
         public tank2:objects.Tank;
 
         // contructor
-
         constructor(level:number, parent:createjs.Container) {
             super(config.MAP_BACKGROUND[level-1]);
 
@@ -63,14 +61,33 @@ module objects {
 
         // public methods
         public GetCellContent(x:number, y:number):config.BlockType {
-            return this.grid[this._GetGridRow(y)][this._GetGridColumn(x)];
+            let row = this._GetGridRow(y);
+            if(row < 0 || row >= this.blocks.length) {
+                return null;
+            }
+            let column = this._GetGridColumn(x);
+            if(column < 0 || column >= this.blocks[row].length) {
+                return null;
+            }
+            return this.grid[row][column];
+        }
+
+        public GetBlock(x:number, y:number):objects.Block {
+            return this.blocks[this._GetGridRow(y)][this._GetGridColumn(x)];
+        }
+
+        public DestroyBlock(x:number, y:number):void {
+            let row = this._GetGridRow(y);
+            let column = this._GetGridColumn(x);
+            this.grid[row][column] = config.BlockType.__;
+            managers.Game.currentScene.removeChild(this.blocks[row][column]);
         }
 
         public Reset():void {
-            this.blocksNum = 0;
-            this.blocks = new Array<objects.Block>();
-
             this.grid = this._PrepareGrid();
+            for(let i:number = 0; i< this.grid.length; i++) {
+                this.blocks
+            }
 
             const SCALE = Math.min(
                 config.SCREEN_WITH / (this.grid[0].length) / config.BLOCK_SIZE, 
@@ -81,7 +98,9 @@ module objects {
             this._hOffset = ((config.SCREEN_WITH - (this._blockSize * this.grid[0].length)) / 2) + (this._blockSize / 2);
             this._vOffset = ((config.SCREEN_HEIGHT - (this._blockSize * this.grid.length)) / 2) + (this._blockSize / 2);
             
+            this.blocks = new Array<objects.Block[]>();
             for (let yi = 0; yi < this.grid.length; yi++) {
+                this.blocks[yi] = new Array<objects.Block>();
                 const row = this.grid[yi];
                 for (let xi = 0; xi < row.length; xi++) {
                     const gridElemnt = row[xi];
@@ -105,11 +124,11 @@ module objects {
                         }
                         
                         default: {
-                            this.blocks[this.blocksNum] = new objects.Block(this._level, gridElemnt, x, y);
-                            this.blocks[this.blocksNum].scaleX = SCALE;
-                            this.blocks[this.blocksNum].scaleY = SCALE;
-                            this._parent.addChild(this.blocks[this.blocksNum]);
-                            this.blocksNum++;
+                            let block:objects.Block = new objects.Block(this._level, gridElemnt, x, y);
+                            block.scaleX = SCALE;
+                            block.scaleY = SCALE;
+                            this.blocks[yi][xi] = block;
+                            this._parent.addChild(block);
                             break;
                         }
                     }

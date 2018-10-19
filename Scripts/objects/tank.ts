@@ -6,6 +6,9 @@ module objects {
         private _playerIndex:number;
         private _forward:util.Vector2;
         private _right:util.Vector2;
+        private _bullets:objects.Bullet[];
+        private _shoot1:boolean;
+        private _bulletsNum:number;
 
 
         constructor(playerNumner:number, x:number, y:number, scale:number) {
@@ -19,6 +22,8 @@ module objects {
             this._rotationSpeed = 2;
             this._forward = new util.Vector2(0, -this.HalfHeight * scale);
             this._right = new util.Vector2(this.HalfWidth * scale, 0);
+            this._bullets = new Array<objects.Bullet>();
+            this._bulletsNum = 0;
             this.Start();
         }
 
@@ -48,6 +53,20 @@ module objects {
 
         public Reset(): void {
             throw new Error("Method not implemented.");
+        }
+
+        private _activateBullet() {
+            for(let i:number = 0; i < this._bullets.length; i++) {
+                if(this._bullets[i].IsAvailable()) {
+                    this._bullets[i].Activate(this.x, this.y, this.rotation);
+                    return;
+                }
+            }
+            let newBullet = new objects.Bullet(this.x, this.y, this.rotation);
+            this._bullets[this._bulletsNum] = newBullet;
+            this._bulletsNum++;
+            this.parent.addChild(newBullet);
+            console.log("bullets: " + this._bulletsNum);
         }
 
         private _rotate(rotation:number) {
@@ -116,6 +135,18 @@ module objects {
                 }
             }
 
+            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Shoot1])) {
+                if(!this._shoot1) {
+                    this._activateBullet()
+                    this._shoot1 = true
+                }
+            } else {
+                this._shoot1 = false;
+            }
+
+            this._bullets.forEach(bullet => {
+                bullet.Update();
+            });
         }
         public Destroy(): void {
             throw new Error("Method not implemented.");

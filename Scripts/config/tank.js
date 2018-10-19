@@ -6,6 +6,7 @@ var config;
         ActionEnum[ActionEnum["Backward"] = 1] = "Backward";
         ActionEnum[ActionEnum["TurnRight"] = 2] = "TurnRight";
         ActionEnum[ActionEnum["TurnLeft"] = 3] = "TurnLeft";
+        ActionEnum[ActionEnum["Shoot1"] = 4] = "Shoot1";
     })(ActionEnum = config.ActionEnum || (config.ActionEnum = {}));
     let PlayerEnum;
     (function (PlayerEnum) {
@@ -17,13 +18,15 @@ var config;
             "KeyW",
             "KeyS",
             "KeyD",
-            "KeyA" // TurnLeft
+            "KeyA",
+            "KeyX" // shoot 1
         ],
         [
             "ArrowUp",
             "ArrowDown",
             "ArrowRight",
-            "ArrowLeft" // TurnLeft
+            "ArrowLeft",
+            "KeyM" // shoot 1
         ]
     ];
     config.BUMPERS = [

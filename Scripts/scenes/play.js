@@ -3,6 +3,7 @@ var scenes;
     class Play extends objects.Scene {
         constructor() {
             super();
+            managers.Game.currentScene = this;
             this._level = 1;
             this.Start();
         }

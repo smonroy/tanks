@@ -3,7 +3,8 @@ module config {
         Forward,
         Backward,
         TurnRight,
-        TurnLeft
+        TurnLeft,
+        Shoot1
     }
 
     export enum PlayerEnum {
@@ -13,16 +14,18 @@ module config {
 
     export const INPUT_KEY:string[][] = [
         [ // Player 1
-            "KeyW", // Forward
-            "KeyS", // Backward
-            "KeyD", // TurnRight
-            "KeyA"  // TurnLeft
+            "KeyW",         // Forward
+            "KeyS",         // Backward
+            "KeyD",         // TurnRight
+            "KeyA",         // TurnLeft
+            "KeyX"          // shoot 1
         ],
         [ // Player 2
-            "ArrowUp", // Forward
-            "ArrowDown", // Backward
-            "ArrowRight", // TurnRight
-            "ArrowLeft"  // TurnLeft
+            "ArrowUp",      // Forward
+            "ArrowDown",    // Backward
+            "ArrowRight",   // TurnRight
+            "ArrowLeft",    // TurnLeft
+            "KeyM"          // shoot 1
         ]
     ]
 
