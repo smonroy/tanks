@@ -24,13 +24,15 @@ module scenes {
         public Update(): void {
             this._map.tank1.Update();
             this._map.tank2.Update();
-            if (managers.Collision.isColliding(this._map.tank1, this._map.tank2)) {
-                this._map.tank1.Reset();
-                this._map.tank2.Reset();
+            if (util.Vector2.ManhatDistance(this._map.tank1.Position, this._map.tank2.Position) < (this._map.tank1.Height * 3)) {
+                if (managers.Collision.isColliding(this._map.tank1, this._map.tank2)) {
+                    this._map.tank1.Reset();
+                    this._map.tank2.Reset();
+                }
             }
-            if(managers.Game.scoreBoard.isBattleOver()) {
-                if(this._level == 3) {
-                    managers.Game.currentState = config.Scene.START; 
+            if (managers.Game.scoreBoard.isBattleOver()) {
+                if (this._level == 3) {
+                    managers.Game.currentState = config.Scene.START;
                 } else {
                     this._levelup();
                 }

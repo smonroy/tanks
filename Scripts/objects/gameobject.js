@@ -33,6 +33,9 @@ var objects;
         set HalfHeight(newValue) {
             this._halfHeight = newValue;
         }
+        get Position() {
+            return new util.Vector2(this.x, this.y);
+        }
         // private methods
         _initialize() {
             this.Width = this.getBounds().width;

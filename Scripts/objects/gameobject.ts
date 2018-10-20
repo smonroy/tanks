@@ -41,6 +41,10 @@ module objects {
             this._halfHeight = newValue;
         }
 
+        get Position(): util.Vector2 {
+            return new util.Vector2(this.x, this.y);
+        }
+
         // constructors
         constructor(imageString: string) {
             super(managers.Game.assetMnager.getResult(imageString));

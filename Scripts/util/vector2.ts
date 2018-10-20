@@ -30,6 +30,10 @@ module util {
             return (xD * xD) + (yD * yD);
         }
 
+        public static ManhatDistance(vec1: util.Vector2, vec2: util.Vector2): number {
+            return Math.abs(vec1.x - vec2.x) + Math.abs(vec1.y - vec2.y);
+        }
+
         /**
          *
          *

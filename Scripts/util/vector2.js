@@ -26,6 +26,9 @@ var util;
             let yD = vec1.y - vec2.y;
             return (xD * xD) + (yD * yD);
         }
+        static ManhatDistance(vec1, vec2) {
+            return Math.abs(vec1.x - vec2.x) + Math.abs(vec1.y - vec2.y);
+        }
         /**
          *
          *
