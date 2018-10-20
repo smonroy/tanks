@@ -19,9 +19,13 @@ var scenes;
         Update() {
             this._map.tank1.Update();
             this._map.tank2.Update();
-            if (managers.Collision.isColliding(this._map.tank1, this._map.tank2)) {
-                this._map.tank1.Reset();
-                this._map.tank2.Reset();
+            if (managers.Game.scoreBoard.isBattleOver()) {
+                if (this._level == 3) {
+                    managers.Game.currentState = config.Scene.START;
+                }
+                else {
+                    this._levelup();
+                }
             }
         }
         ;
@@ -31,8 +35,10 @@ var scenes;
         ;
         Reset() {
             this.removeAllChildren();
+            managers.Game.scoreBoard.Reset();
             this._map = new objects.Map(this._level, this);
             managers.Game.map = this._map;
+            managers.Game.scoreBoard.AddPlayUI(this);
         }
         ;
         Main() {
@@ -44,6 +50,7 @@ var scenes;
                     this._levelup();
                 }
             });
+            managers.Game.scoreBoard.AddPlayUI(this);
         }
         ;
     }

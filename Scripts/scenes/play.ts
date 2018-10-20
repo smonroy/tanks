@@ -28,6 +28,13 @@ module scenes {
                 this._map.tank1.Reset();
                 this._map.tank2.Reset();
             }
+            if(managers.Game.scoreBoard.isBattleOver()) {
+                if(this._level == 3) {
+                    managers.Game.currentState = config.Scene.START; 
+                } else {
+                    this._levelup();
+                }
+            }
         };
 
         public Destroy(): void {
@@ -36,8 +43,10 @@ module scenes {
 
         public Reset(): void {
             this.removeAllChildren();
+            managers.Game.scoreBoard.Reset();
             this._map = new objects.Map(this._level, this);
             managers.Game.map = this._map;
+            managers.Game.scoreBoard.AddPlayUI(this);
         };
 
         public Main(): void {
@@ -48,6 +57,9 @@ module scenes {
                     this._levelup();
                 }
             });
+
+            managers.Game.scoreBoard.AddPlayUI(this);
         };
+
     }
 }

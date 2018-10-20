@@ -65,9 +65,6 @@ var objects;
         }
         Reset() {
             this.grid = this._PrepareGrid();
-            for (let i = 0; i < this.grid.length; i++) {
-                this.blocks;
-            }
             const SCALE = Math.min(config.SCREEN_WITH / (this.grid[0].length) / config.BLOCK_SIZE, config.SCREEN_HEIGHT / (this.grid.length) / config.BLOCK_SIZE);
             this._blockSize = config.BLOCK_SIZE * SCALE;
             this._hOffset = ((config.SCREEN_WITH - (this._blockSize * this.grid[0].length)) / 2) + (this._blockSize / 2);
@@ -100,6 +97,10 @@ var objects;
                             block.scaleY = SCALE;
                             this.blocks[yi][xi] = block;
                             this._parent.addChild(block);
+                            if (gridElemnt == config.BlockType.B1)
+                                managers.Game.scoreBoard.AddBase1();
+                            if (gridElemnt == config.BlockType.B2)
+                                managers.Game.scoreBoard.AddBase2();
                             break;
                         }
                     }
