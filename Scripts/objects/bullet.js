@@ -47,6 +47,10 @@ var objects;
                         break;
                     default:
                         managers.Game.map.DestroyBlock(this.x, this.y);
+                        if (blockType == config.BlockType.B1)
+                            managers.Game.scoreBoard.SubstractBase1();
+                        if (blockType == config.BlockType.B2)
+                            managers.Game.scoreBoard.SubstractBase2();
                         this.Deactivate();
                         break;
                 }

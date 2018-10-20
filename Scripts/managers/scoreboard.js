@@ -1,0 +1,89 @@
+var managers;
+(function (managers) {
+    class ScoreBoard {
+        // contructor
+        constructor(p1Bases = 0, p2bases = 0, p1Victories = 0, p2Victories = 0) {
+            this.Start();
+            this._P1Bases = p1Bases;
+            this._P2Bases = p2bases;
+            this._P1Victories = p1Victories;
+            this._P2Victories = p2Victories;
+        }
+        // private _scoreLabel:objects.Label;
+        // private _livesLabel:objects.Label;
+        // private _highScoreLabel:objects.Label;        
+        get _P1Bases() {
+            return this._p1Bases;
+        }
+        set _P1Bases(newValue) {
+            this._p1Bases = newValue;
+            this._p1BasesLabel.text = "Bases: " + this._p1Bases;
+        }
+        get _P2Bases() {
+            return this._p2Bases;
+        }
+        set _P2Bases(newValue) {
+            this._p2Bases = newValue;
+            this._p2BasesLabel.text = "Bases: " + this._p2Bases;
+        }
+        get _P1Victories() {
+            return this._p1Victories;
+        }
+        set _P1Victories(newValue) {
+            this._p1Victories = newValue;
+            this._p1VictoriesLabel.text = "Victories: " + this._p1Victories;
+        }
+        get _P2Victories() {
+            return this._p2Victories;
+        }
+        set _P2Victories(newValue) {
+            this._p2Victories = newValue;
+            this._p2VictoriesLabel.text = "Victories: " + this._p2Victories;
+        }
+        // private methods
+        // public methods
+        Start() {
+            this._p1BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 20, 3, false);
+            this._p1VictoriesLabel = new objects.Label("Victories: 9", "30px", "Consolas", "#00FF00", 150, 3, false);
+            this._p2BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 740, 3, false);
+            this._p2VictoriesLabel = new objects.Label("Victories: 9", "30px", "Consolas", "#00FF00", 870, 3, false);
+        }
+        AddPlayUI(currentScene) {
+            currentScene.addChild(this._p1BasesLabel);
+            currentScene.addChild(this._p1VictoriesLabel);
+            currentScene.addChild(this._p2BasesLabel);
+            currentScene.addChild(this._p2VictoriesLabel);
+        }
+        Reset(p1Bases = 0, p2bases = 0) {
+            this._p1Bases = p1Bases;
+            this._p2Bases = p2bases;
+        }
+        AddGameOverUI(currentScene) {
+            currentScene.addChild(this._p1VictoriesLabel);
+            currentScene.addChild(this._p2VictoriesLabel);
+        }
+        AddBase1() {
+            this._P1Bases++;
+        }
+        AddBase2() {
+            this._P2Bases++;
+        }
+        SubstractBase1() {
+            this._P1Bases--;
+            if (this._P1Bases <= 0) {
+                this._P2Victories++;
+            }
+        }
+        SubstractBase2() {
+            this._P2Bases--;
+            if (this._P2Bases <= 0) {
+                this._P1Victories++;
+            }
+        }
+        isBattleOver() {
+            return this._P1Bases == 0 || this._P2Bases == 0;
+        }
+    }
+    managers.ScoreBoard = ScoreBoard;
+})(managers || (managers = {}));
+//# sourceMappingURL=scoreboard.js.map
