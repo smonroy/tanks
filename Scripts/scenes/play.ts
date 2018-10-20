@@ -1,8 +1,8 @@
 module scenes {
-    export class Play extends objects.Scene{
+    export class Play extends objects.Scene {
 
-        private _map:objects.Map;
-        private _level:number;
+        private _map: objects.Map;
+        private _level: number;
 
         constructor() {
             super();
@@ -11,19 +11,23 @@ module scenes {
             this.Start();
         }
 
-        private _levelup():void {
+        private _levelup(): void {
             this._level++;
             this.Reset()
         }
 
-        public Start():void {
+        public Start(): void {
             this.Reset();
             this.Main();
         };
 
-        public Update():void {
+        public Update(): void {
             this._map.tank1.Update();
             this._map.tank2.Update();
+            if (managers.Collision.isColliding(this._map.tank1, this._map.tank2)) {
+                this._map.tank1.Reset();
+                this._map.tank2.Reset();
+            }
             if(managers.Game.scoreBoard.isBattleOver()) {
                 if(this._level == 3) {
                     managers.Game.currentState = config.Scene.START; 
@@ -33,11 +37,11 @@ module scenes {
             }
         };
 
-        public Destroy():void {
+        public Destroy(): void {
             this.removeAllChildren();
         };
 
-        public Reset():void {
+        public Reset(): void {
             this.removeAllChildren();
             managers.Game.scoreBoard.Reset();
             this._map = new objects.Map(this._level, this);
@@ -45,10 +49,10 @@ module scenes {
             managers.Game.scoreBoard.AddPlayUI(this);
         };
 
-        public Main():void {
-            this.on("click", ()=>{
-                if(this._level == 3) {
-                    managers.Game.currentState = config.Scene.START; 
+        public Main(): void {
+            this.on("click", () => {
+                if (this._level == 3) {
+                    managers.Game.currentState = config.Scene.START;
                 } else {
                     this._levelup();
                 }

@@ -38,6 +38,20 @@ var objects;
             this.Width = this.getBounds().width;
             this.Height = this.getBounds().height;
         }
+        getCorners(xOffset = 0, yOffset = 0) {
+            let verts = [
+                new util.Vector2(-this.HalfWidth, -this.HalfHeight),
+                new util.Vector2(this.HalfWidth, -this.HalfHeight),
+                new util.Vector2(this.HalfWidth, this.HalfHeight),
+                new util.Vector2(-this.HalfWidth, this.HalfHeight)
+            ];
+            for (let i = 0; i < verts.length; i++) {
+                verts[i] = util.Vector2.Rotate(verts[i], this.rotation);
+                verts[i].x += this.x + xOffset;
+                verts[i].y += this.y + yOffset;
+            }
+            return verts;
+        }
     }
     objects.GameObject = GameObject;
 })(objects || (objects = {}));
