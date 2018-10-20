@@ -28,8 +28,8 @@ module objects {
         }
 
         private _isPassable(action: config.ActionEnum, xDelta: number = 0, yDelta: number = 0): boolean {
-            let xScalar = 0;
-            let yScalar = 1;
+            //let xScalar = 0;
+            //let yScalar = 1;
             let forward = this._forward;
             let right = this._right;
 
@@ -73,15 +73,6 @@ module objects {
             this.rotation += rotation;
             this._forward = util.Vector2.Rotate(this._forward, rotation);
             this._right = util.Vector2.Rotate(this._right, rotation);
-        }
-
-        public isColliding(other: objects.GameObject) {
-            let axes: util.Vector2[] = [
-                new util.Vector2(Math.cos(this.rotation), Math.sin(this.rotation)),
-                new util.Vector2(-Math.sin(this.rotation), Math.cos(this.rotation)),
-                new util.Vector2(Math.cos(other.rotation), Math.sin(other.rotation)),
-                new util.Vector2(-Math.sin(other.rotation), Math.cos(other.rotation))
-            ];
         }
 
         public Start(): void {

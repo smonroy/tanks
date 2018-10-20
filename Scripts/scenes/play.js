@@ -19,6 +19,9 @@ var scenes;
         Update() {
             this._map.tank1.Update();
             this._map.tank2.Update();
+            if (managers.Collision.isColliding(this._map.tank1, this._map.tank2)) {
+                console.log("tank collision");
+            }
         }
         ;
         Destroy() {

@@ -55,14 +55,16 @@ module objects {
 
         public getCorners(): util.Vector2[] {
             let verts: util.Vector2[] = [
-                new util.Vector2(-this.HalfWidth + this.x, -this.HalfHeight + this.y),
-                new util.Vector2(this.HalfWidth + this.x, -this.HalfHeight + this.y),
-                new util.Vector2(this.HalfWidth + this.x, this.HalfHeight + this.y),
-                new util.Vector2(-this.HalfWidth + this.x, this.HalfHeight + this.y)
+                new util.Vector2(-this.HalfWidth, -this.HalfHeight),
+                new util.Vector2(this.HalfWidth, -this.HalfHeight),
+                new util.Vector2(this.HalfWidth, this.HalfHeight),
+                new util.Vector2(-this.HalfWidth, this.HalfHeight)
             ];
 
             for (let i: number = 0; i < verts.length; i++) {
                 verts[i] = util.Vector2.Rotate(verts[i], this.rotation);
+                verts[i].x += this.x;
+                verts[i].y += this.y;
             }
 
             return verts;
