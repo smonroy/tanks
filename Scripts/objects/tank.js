@@ -5,6 +5,7 @@ var objects;
             super("tank");
             this.x = x;
             this.y = y;
+            this._startPoint = new util.Vector2(this.x, this.y);
             this.scaleX = scale;
             this.scaleY = scale;
             this._playerIndex = playerNumner - 1;
@@ -38,7 +39,8 @@ var objects;
             return true;
         }
         Reset() {
-            throw new Error("Method not implemented.");
+            this.x = this._startPoint.x;
+            this.y = this._startPoint.y;
         }
         _activateBullet() {
             for (let i = 0; i < this._bullets.length; i++) {
@@ -61,6 +63,7 @@ var objects;
         Start() {
             this.regX = this.HalfWidth;
             this.regY = this.HalfHeight;
+            console.log(this.HalfHeight, this.HalfWidth);
         }
         Update() {
             let xd = this._speed * Math.sin(this.rotation * Math.PI / 180);

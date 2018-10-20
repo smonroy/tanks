@@ -1,16 +1,16 @@
 var managers;
 (function (managers) {
     class Collision {
-        static isColliding(Go1, Go2) {
+        static isColliding(go1, go2) {
             let axes = [
-                new util.Vector2(Math.cos(Go1.rotation), Math.sin(Go1.rotation)),
-                new util.Vector2(-Math.sin(Go1.rotation), Math.cos(Go1.rotation)),
-                new util.Vector2(Math.cos(Go2.rotation), Math.sin(Go2.rotation)),
-                new util.Vector2(-Math.sin(Go2.rotation), Math.cos(Go2.rotation))
+                new util.Vector2(Math.cos(go1.rotation), Math.sin(go1.rotation)),
+                new util.Vector2(-Math.sin(go1.rotation), Math.cos(go1.rotation)),
+                new util.Vector2(Math.cos(go2.rotation), Math.sin(go2.rotation)),
+                new util.Vector2(-Math.sin(go2.rotation), Math.cos(go2.rotation))
             ];
-            let verts1 = Go1.getCorners();
+            let verts1 = go1.getCorners();
             //console.log(verts1);
-            let verts2 = Go2.getCorners();
+            let verts2 = go2.getCorners();
             //console.log(verts2);
             // project vertices to each axis
             for (let i = 0; i < axes.length; ++i) {

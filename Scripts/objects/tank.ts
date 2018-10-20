@@ -9,12 +9,13 @@ module objects {
         private _bullets: objects.Bullet[];
         private _shoot1: boolean;
         private _bulletsNum: number;
-
+        private _startPoint: util.Vector2;
 
         constructor(playerNumner: number, x: number, y: number, scale: number) {
             super("tank");
             this.x = x;
             this.y = y;
+            this._startPoint = new util.Vector2(this.x, this.y);
             this.scaleX = scale;
             this.scaleY = scale;
             this._playerIndex = playerNumner - 1;
@@ -52,7 +53,8 @@ module objects {
         }
 
         public Reset(): void {
-            throw new Error("Method not implemented.");
+            this.x = this._startPoint.x;
+            this.y = this._startPoint.y;
         }
 
         private _activateBullet() {
@@ -78,6 +80,7 @@ module objects {
         public Start(): void {
             this.regX = this.HalfWidth;
             this.regY = this.HalfHeight;
+            console.log(this.HalfHeight, this.HalfWidth);
         }
 
         public Update(): void {
