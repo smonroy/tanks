@@ -85,9 +85,6 @@ module objects {
 
         public Reset():void {
             this.grid = this._PrepareGrid();
-            for(let i:number = 0; i< this.grid.length; i++) {
-                this.blocks
-            }
 
             const SCALE = Math.min(
                 config.SCREEN_WITH / (this.grid[0].length) / config.BLOCK_SIZE, 
@@ -129,6 +126,8 @@ module objects {
                             block.scaleY = SCALE;
                             this.blocks[yi][xi] = block;
                             this._parent.addChild(block);
+                            if(gridElemnt == config.BlockType.B1) managers.Game.scoreBoard.AddBase1();
+                            if(gridElemnt == config.BlockType.B2) managers.Game.scoreBoard.AddBase2();
                             break;
                         }
                     }

@@ -6,6 +6,7 @@
     let assetManager;
     let currentScene;
     let currentState;
+    let scoreBoard;
     let assetManifest = [
         { id: "startButton", src: "./Assets/Images/startButton.png" },
         { id: "engineSound", src: "./Assets/audio/engine.ogg" },
@@ -46,6 +47,8 @@
         document.addEventListener("keyup", (event) => {
             managers.Input.HandleUpInput(event);
         });
+        scoreBoard = new managers.ScoreBoard();
+        managers.Game.scoreBoard = scoreBoard;
         Main();
     }
     // this is the game loop
