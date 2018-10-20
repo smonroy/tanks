@@ -58,6 +58,14 @@ var objects;
             this._forward = util.Vector2.Rotate(this._forward, rotation);
             this._right = util.Vector2.Rotate(this._right, rotation);
         }
+        isColliding(other) {
+            let axes = [
+                new util.Vector2(Math.cos(this.rotation), Math.sin(this.rotation)),
+                new util.Vector2(-Math.sin(this.rotation), Math.cos(this.rotation)),
+                new util.Vector2(Math.cos(other.rotation), Math.sin(other.rotation)),
+                new util.Vector2(-Math.sin(other.rotation), Math.cos(other.rotation))
+            ];
+        }
         Start() {
             this.regX = this.HalfWidth;
             this.regY = this.HalfHeight;
