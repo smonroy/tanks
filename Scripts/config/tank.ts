@@ -4,7 +4,10 @@ module config {
         Backward,
         TurnRight,
         TurnLeft,
-        Shoot1
+        Shoot1,
+        TurretLeft,
+        TurretRight,
+        TurretShoot
     }
 
     export enum PlayerEnum {
@@ -18,15 +21,33 @@ module config {
             "KeyS",         // Backward
             "KeyD",         // TurnRight
             "KeyA",         // TurnLeft
-            "KeyX"          // shoot 1
+            "KeyE",         // Shoot 1
+            "KeyZ",         // TurretLeft
+            "KeyC",         // TurretRight
+            "KeyX",         // TurretShoot
         ],
+        // [ // Player 2
+        //     "ArrowUp",      // Forward
+        //     "ArrowDown",    // Backward
+        //     "ArrowRight",   // TurnRight
+        //     "ArrowLeft",    // TurnLeft
+        //     "KeyM",         // Shoot 1
+        //     "Comma",        // TurretLeft
+        //     "Period",       // TurretRight
+        //     "KeyN",         // TurretShoot
+
+        // ],
         [ // Player 2
-            "ArrowUp",      // Forward
-            "ArrowDown",    // Backward
-            "ArrowRight",   // TurnRight
-            "ArrowLeft",    // TurnLeft
-            "KeyM"          // shoot 1
-        ]
+            "Numpad8",      // Forward
+            "Numpad5",      // Backward
+            "Numpad6",      // TurnRight
+            "Numpad4",      // TurnLeft
+            "Numpad9",      // Shoot 1
+            "Numpad1",      // TurretLeft
+            "Numpad3",      // TurretRight
+            "Numpad2",      // TurretShoot
+
+        ],
     ]
 
     export const BUMPERS:util.Vector2[][] = [

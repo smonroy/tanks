@@ -8,19 +8,25 @@ module objects {
         private _right: util.Vector2;
         private _bullets: objects.Bullet[];
         private _shoot1: boolean;
+        private _shoot2: boolean;
         private _bulletsNum: number;
         private _startPoint: util.Vector2;
+        private _turret:objects.Turret;
+        private _turretOffset:number;   // factor of halfHeight
 
-        constructor(playerNumner: number, x: number, y: number, scale: number) {
-            super("tank");
+        constructor(playerNumber: number, x: number, y: number, scale: number, turret:objects.Turret) {
+            super("tank" + playerNumber);
             this.x = x;
             this.y = y;
             this._startPoint = new util.Vector2(this.x, this.y);
             this.scaleX = scale;
             this.scaleY = scale;
-            this._playerIndex = playerNumner - 1;
+            this._turret = turret;
+            this._initialize();
+            this._playerIndex = playerNumber - 1;
             this._speed = 2;
             this._rotationSpeed = 2;
+            this._turretOffset = 0.4;
             this._forward = new util.Vector2(0, -this.HalfHeight * scale);
             this._right = new util.Vector2(this.HalfWidth * scale, 0);
             this._bullets = new Array<objects.Bullet>();
@@ -57,14 +63,20 @@ module objects {
             this.y = this._startPoint.y;
         }
 
-        private _activateBullet() {
+        private _activateBullet(turret:boolean = false, localRotation:number = 0) {
+            let spawnPoint:util.Vector2 = util.Vector2.Rotate(this._forward, localRotation);
+            if(turret) {
+                spawnPoint.x -= (this._forward.x * this._turretOffset);
+                spawnPoint.y -= (this._forward.y * this._turretOffset);
+            }
+            spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));            
             for (let i: number = 0; i < this._bullets.length; i++) {
                 if (this._bullets[i].IsAvailable()) {
-                    this._bullets[i].Activate(this.x, this.y, this.rotation);
+                    this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
                     return;
                 }
             }
-            let newBullet = new objects.Bullet(this.x, this.y, this.rotation);
+            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
             this._bullets[this._bulletsNum] = newBullet;
             this._bulletsNum++;
             this.parent.addChild(newBullet);
@@ -147,9 +159,20 @@ module objects {
                 this._shoot1 = false;
             }
 
+            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
+                if (!this._shoot2) {
+                    this._activateBullet(true, this._turret.GetTurretRotation());
+                    this._shoot2 = true
+                }
+            } else {
+                this._shoot2 = false;
+            }
+
             this._bullets.forEach(bullet => {
                 bullet.Update();
             });
+            this._turret.Update();
+            this._turret.Sync(this.x - (this._forward.x * this._turretOffset) , this.y - (this._forward.y * this._turretOffset), this.rotation);
         }
         public Destroy(): void {
             throw new Error("Method not implemented.");

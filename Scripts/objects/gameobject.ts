@@ -52,17 +52,17 @@ module objects {
         }
 
         // private methods
-        private _initialize(): void {
+        protected _initialize(): void {
             this.Width = this.getBounds().width;
             this.Height = this.getBounds().height;
         }
 
         public getCorners(xOffset: number = 0, yOffset: number = 0): util.Vector2[] {
             let verts: util.Vector2[] = [
-                new util.Vector2(-this.HalfWidth, -this.HalfHeight),
-                new util.Vector2(this.HalfWidth, -this.HalfHeight),
-                new util.Vector2(this.HalfWidth, this.HalfHeight),
-                new util.Vector2(-this.HalfWidth, this.HalfHeight)
+                new util.Vector2(-this.HalfWidth * this.scaleX, -this.HalfHeight * this.scaleY),
+                new util.Vector2(this.HalfWidth * this.scaleX, -this.HalfHeight * this.scaleY),
+                new util.Vector2(this.HalfWidth * this.scaleX, this.HalfHeight * this.scaleY),
+                new util.Vector2(-this.HalfWidth * this.scaleX, this.HalfHeight * this.scaleY)
             ];
 
             for (let i: number = 0; i < verts.length; i++) {

@@ -2,11 +2,11 @@ var objects;
 (function (objects) {
     class Map extends objects.GameObject {
         // contructor
-        constructor(level, parent) {
+        constructor(level, scene) {
             super(config.MAP_BACKGROUND[level - 1]);
             this._level = level - 1;
-            this._parent = parent;
-            this._parent.addChild(this);
+            this._scene = scene;
+            this._scene.addChild(this);
             this.x = config.SCREEN_WITH / 2;
             this.y = config.SCREEN_HEIGHT / 2;
             this.regX = this.HalfWidth;
@@ -82,12 +82,14 @@ var objects;
                             break;
                         }
                         case config.BlockType.T1: {
-                            this.tank1 = new objects.Tank(1, x, y, SCALE);
+                            this.turret1 = new objects.Turret(1, x, y, SCALE / 4);
+                            this.tank1 = new objects.Tank(1, x, y, SCALE / 4, this.turret1);
                             this.grid[yi][xi] = config.BlockType.__;
                             break;
                         }
                         case config.BlockType.T2: {
-                            this.tank2 = new objects.Tank(2, x, y, SCALE);
+                            this.turret2 = new objects.Turret(2, x, y, SCALE / 4);
+                            this.tank2 = new objects.Tank(2, x, y, SCALE / 4, this.turret2);
                             this.grid[yi][xi] = config.BlockType.__;
                             break;
                         }
@@ -96,7 +98,7 @@ var objects;
                             block.scaleX = SCALE;
                             block.scaleY = SCALE;
                             this.blocks[yi][xi] = block;
-                            this._parent.addChild(block);
+                            this._scene.addChild(block);
                             if (gridElemnt == config.BlockType.B1)
                                 managers.Game.scoreBoard.AddBase1();
                             if (gridElemnt == config.BlockType.B2)
@@ -106,8 +108,10 @@ var objects;
                     }
                 }
             }
-            this._parent.addChild(this.tank1);
-            this._parent.addChild(this.tank2);
+            this._scene.addChild(this.tank1);
+            this._scene.addChild(this.turret1);
+            this._scene.addChild(this.tank2);
+            this._scene.addChild(this.turret2);
         }
         Start() {
             this.Reset();

@@ -43,10 +43,10 @@ var objects;
         }
         getCorners(xOffset = 0, yOffset = 0) {
             let verts = [
-                new util.Vector2(-this.HalfWidth, -this.HalfHeight),
-                new util.Vector2(this.HalfWidth, -this.HalfHeight),
-                new util.Vector2(this.HalfWidth, this.HalfHeight),
-                new util.Vector2(-this.HalfWidth, this.HalfHeight)
+                new util.Vector2(-this.HalfWidth * this.scaleX, -this.HalfHeight * this.scaleY),
+                new util.Vector2(this.HalfWidth * this.scaleX, -this.HalfHeight * this.scaleY),
+                new util.Vector2(this.HalfWidth * this.scaleX, this.HalfHeight * this.scaleY),
+                new util.Vector2(-this.HalfWidth * this.scaleX, this.HalfHeight * this.scaleY)
             ];
             for (let i = 0; i < verts.length; i++) {
                 verts[i] = util.Vector2.Rotate(verts[i], this.rotation);
