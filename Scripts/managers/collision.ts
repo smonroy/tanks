@@ -43,7 +43,7 @@ module managers {
                 let r1: number = max1 - min1;
                 let r2: number = max2 - min2;
                 let r: number = Math.max(max1, max2) - Math.min(min1, min2);
-                console.log (r, r1, r2);
+                //console.log (r, r1, r2);
                 if (r1 + r2 < r) {
                     return false;
                 }

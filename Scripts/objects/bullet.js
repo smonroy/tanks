@@ -42,15 +42,16 @@ var objects;
                     case config.BlockType.D2:
                         this.Deactivate();
                         break;
+                    case config.BlockType.B1:
+                    case config.BlockType.B2:
+                        managers.Game.map.GetBlock(this.x, this.y).Health--;
+                        this.Deactivate();
+                        break;
                     case null:
                         this.Deactivate();
                         break;
                     default:
                         managers.Game.map.DestroyBlock(this.x, this.y);
-                        if (blockType == config.BlockType.B1)
-                            managers.Game.scoreBoard.SubstractBase1();
-                        if (blockType == config.BlockType.B2)
-                            managers.Game.scoreBoard.SubstractBase2();
                         this.Deactivate();
                         break;
                 }

@@ -40,7 +40,7 @@ var managers;
                 let r1 = max1 - min1;
                 let r2 = max2 - min2;
                 let r = Math.max(max1, max2) - Math.min(min1, min2);
-                console.log(r, r1, r2);
+                //console.log (r, r1, r2);
                 if (r1 + r2 < r) {
                     return false;
                 }
