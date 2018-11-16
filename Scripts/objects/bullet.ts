@@ -45,22 +45,14 @@ module objects {
                 let blockType: config.BlockType = managers.Game.map.GetCellContent(this.x, this.y);
                 switch (blockType) {
                     case config.BlockType.__:
-                        break;
                     case config.BlockType.IN:
                         break;
                     case config.BlockType.D2:
-                        this.Deactivate();
-                        break;
-                    case config.BlockType.B1:
-                    case config.BlockType.B2:
-                        managers.Game.map.GetBlock(this.x, this.y).Health--;
-                        this.Deactivate();
-                        break;
                     case null:
                         this.Deactivate();
                         break;
                     default:
-                        managers.Game.map.DestroyBlock(this.x, this.y);
+                        managers.Game.map.GetBlock(this.x, this.y).Health--;
                         this.Deactivate();
                         break;
                 }
