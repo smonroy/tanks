@@ -3,6 +3,7 @@ var objects;
     class Tank extends objects.GameObject {
         constructor(playerNumber, x, y, scale, turret, stunDelay = 179) {
             super("tank" + playerNumber);
+            this._shootDelay = [0, 0, 0];
             this.x = x;
             this.y = y;
             this._startPoint = new util.Vector2(this.x, this.y);
@@ -68,26 +69,25 @@ var objects;
         SetEnemy(enemy) {
             this._enemy = enemy;
         }
-        Stun() {
-            this._stunned = true;
-            this._turret.alpha = 0.5;
-            this.alpha = 0.5;
-            this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
-        }
-        _activateBullet(turret = false, localRotation = 0) {
+        _activateBullet(turret = false, localRotation = 0, xOffset = 0) {
             let spawnPoint = util.Vector2.Rotate(this._forward, localRotation);
             if (turret) {
+                spawnPoint = util.Vector2.Multiply(spawnPoint, 1.2);
                 spawnPoint.x -= (this._forward.x * this._turretOffset);
                 spawnPoint.y -= (this._forward.y * this._turretOffset);
             }
+            else {
+                spawnPoint.x += (this._right.x * xOffset);
+                spawnPoint.y += (this._right.y * xOffset);
+            }
             spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));
             for (let i = 0; i < this._bullets.length; i++) {
-                if (this._bullets[i].IsAvailable) {
-                    this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
+                if (this._bullets[i].IsAvailable()) {
+                    this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, turret ? 2 : 1);
                     return;
                 }
             }
-            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, "P" + (this._playerIndex + 1));
+            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, turret ? 2 : 1);
             this._bullets[this._bulletsNum] = newBullet;
             this._bulletsNum++;
             this.parent.addChild(newBullet);
@@ -178,16 +178,23 @@ var objects;
                         this._shoot2 = true;
                     }
                 }
-                else {
-                    this._shoot2 = false;
+            }
+            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootLeft])) {
+                if (this._shootDelay[config.ShootType.left] < Date.now()) {
+                    this._activateBullet(false, 0, -0.7);
+                    this._shootDelay[config.ShootType.left] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.left];
                 }
             }
-            else {
-                //Reset the player's stun state once the period is done
-                if (createjs.Ticker.getTicks() > this._stunFrame) {
-                    this._turret.alpha = 1;
-                    this.alpha = 1;
-                    this._stunned = false;
+            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootRight])) {
+                if (this._shootDelay[config.ShootType.right] < Date.now()) {
+                    this._activateBullet(false, 0, 0.7);
+                    this._shootDelay[config.ShootType.right] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.right];
+                }
+            }
+            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
+                if (this._shootDelay[config.ShootType.turret] < Date.now()) {
+                    this._activateBullet(true, this._turret.GetTurretRotation());
+                    this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
                 }
             }
             this._bullets.forEach(bullet => {

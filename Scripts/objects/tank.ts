@@ -1,27 +1,31 @@
 module objects {
+    
     export class Tank extends GameObject {
 
-        private _speed: number;
+        private _speed:number;
         private _origSpeed: number;
         private _rotationSpeed: number;
         private _origRotationSpeed: number;
-        private _playerIndex: number;
-        private _forward: util.Vector2;
-        private _right: util.Vector2;
-        private _bullets: objects.Bullet[];
-        private _shoot1: boolean;
-        private _shoot2: boolean;
-        private _bulletsNum: number;
-        private _startPoint: util.Vector2;
-        private _turret: objects.Turret;
-        private _turretOffset: number;   // factor of halfHeight
-        private _enemy: objects.Tank;
+        private _playerIndex:number;
+        private _forward:util.Vector2;
+        private _right:util.Vector2;
+        private _bullets:objects.Bullet[];
+        private _shootDelay:number[] = [0, 0, 0];
+        private _bulletsNum:number;
+        private _startPoint:util.Vector2;
+        private _turret:objects.Turret;
+        private _turretOffset:number;   // factor of halfHeight
+        private _enemy:objects.Tank;
         private _stunned: boolean;
         private _stunFrame: number;
         private _stunDelay: number;
-
+  
         get IsStunned(): boolean {
             return this._stunned;
+        }
+
+        get Bullets(): objects.Bullet[] {
+            return this._bullets;
         }
 
         constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 179) {
@@ -92,11 +96,7 @@ module objects {
                 this._rotationSpeed += this._origRotationSpeed;
             }
         }
-
-        public SetEnemy(enemy: objects.Tank) {
-            this._enemy = enemy;
-        }
-
+      
         public Stun() {
             this._stunned = true;
             this._turret.alpha = 0.5;
@@ -104,20 +104,28 @@ module objects {
             this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
         }
 
-        private _activateBullet(turret: boolean = false, localRotation: number = 0) {
-            let spawnPoint: util.Vector2 = util.Vector2.Rotate(this._forward, localRotation);
-            if (turret) {
+        public SetEnemy(enemy: objects.Tank) {
+            this._enemy = enemy;
+        }
+
+        private _activateBullet(turret:boolean = false, localRotation:number = 0, xOffset:number = 0) {
+            let spawnPoint:util.Vector2 = util.Vector2.Rotate(this._forward, localRotation);
+            if(turret) {
+                spawnPoint = util.Vector2.Multiply(spawnPoint, 1.2);
                 spawnPoint.x -= (this._forward.x * this._turretOffset);
                 spawnPoint.y -= (this._forward.y * this._turretOffset);
+            } else {
+                spawnPoint.x += (this._right.x * xOffset);
+                spawnPoint.y += (this._right.y * xOffset);
             }
             spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));
             for (let i: number = 0; i < this._bullets.length; i++) {
-                if (this._bullets[i].IsAvailable) {
-                    this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
+                if (this._bullets[i].IsAvailable()) {
+                    this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, turret ? 2 : 1);
                     return;
                 }
             }
-            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, "P" + (this._playerIndex + 1));
+            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, "P" + (this._playerIndex + 1), turret ? 2 : 1);
             this._bullets[this._bulletsNum] = newBullet;
             this._bulletsNum++;
             this.parent.addChild(newBullet);
@@ -190,22 +198,24 @@ module objects {
                     }
                 }
 
-                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Shoot1])) {
-                    if (!this._shoot1) {
-                        this._activateBullet()
-                        this._shoot1 = true
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootLeft])) {
+                    if (this._shootDelay[config.ShootType.left] < Date.now()) {
+                        this._activateBullet(false, 0, -0.7);
+                        this._shootDelay[config.ShootType.left] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.left];
                     }
-                } else {
-                    this._shoot1 = false;
+                }
+
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootRight])) {
+                    if (this._shootDelay[config.ShootType.right] < Date.now()) {
+                        this._activateBullet(false, 0, 0.7);
+                        this._shootDelay[config.ShootType.right] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.right];
+                    }
                 }
 
                 if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
-                    if (!this._shoot2) {
+                    if (this._shootDelay[config.ShootType.turret] < Date.now()) {
                         this._activateBullet(true, this._turret.GetTurretRotation());
-                        this._shoot2 = true
-                    }
-                } else {
-                    this._shoot2 = false;
+                        this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
                 }
             }
             else {

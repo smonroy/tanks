@@ -1,12 +1,13 @@
 var managers;
 (function (managers) {
     class Input {
-        static isKeydown(key) {
-            //if (Input.keys[key] === undefined) {
-            //     return false;
-            // }else {
-            return Input.keys[key];
-            //}
+        static isKeydown(keys) {
+            for (let index = 0; index < keys.length; index++) {
+                if (Input.keys[keys[index]]) {
+                    return true;
+                }
+            }
+            return false;
         }
         static ShowInput(e, not) {
             if (not) {
@@ -17,11 +18,9 @@ var managers;
             }
         }
         static HandleInput(e) {
-            //            this.ShowInput(e);
             Input.keys[e.code] = true;
         }
         static HandleUpInput(e) {
-            //            this.ShowInput(e, true);
             Input.keys[e.code] = false;
         }
     }

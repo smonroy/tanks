@@ -4,7 +4,8 @@ module config {
         Backward,
         TurnRight,
         TurnLeft,
-        Shoot1,
+        ShootLeft,
+        ShootRight,
         TurretLeft,
         TurretRight,
         TurretShoot
@@ -15,40 +16,35 @@ module config {
         Player2
     }
 
-    export const INPUT_KEY:string[][] = [
+    export enum ShootType {left, right, turret};
+
+    export const SHOOT_DELAY_TIME:number[] = [200, 200, 1000];
+    
+    export const INPUT_KEY:string[][][] = [
         [ // Player 1
-            "KeyW",         // Forward
-            "KeyS",         // Backward
-            "KeyD",         // TurnRight
-            "KeyA",         // TurnLeft
-            "KeyE",         // Shoot 1
-            "KeyZ",         // TurretLeft
-            "KeyC",         // TurretRight
-            "KeyX",         // TurretShoot
+            ["KeyW"],       // Forward
+            ["KeyS"],       // Backward
+            ["KeyD"],       // TurnRight
+            ["KeyA"],       // TurnLeft
+            ["KeyQ"],       // ShootLeft
+            ["KeyE"],       // ShootRight
+            ["KeyZ"],       // TurretLeft
+            ["KeyC"],       // TurretRight
+            ["KeyX"],       // TurretShoot
         ],
-        // [ // Player 2
-        //     "ArrowUp",      // Forward
-        //     "ArrowDown",    // Backward
-        //     "ArrowRight",   // TurnRight
-        //     "ArrowLeft",    // TurnLeft
-        //     "KeyM",         // Shoot 1
-        //     "Comma",        // TurretLeft
-        //     "Period",       // TurretRight
-        //     "KeyN",         // TurretShoot
-
-        // ],
         [ // Player 2
-            "Numpad8",      // Forward
-            "Numpad5",      // Backward
-            "Numpad6",      // TurnRight
-            "Numpad4",      // TurnLeft
-            "Numpad9",      // Shoot 1
-            "Numpad1",      // TurretLeft
-            "Numpad3",      // TurretRight
-            "Numpad2",      // TurretShoot
+            ["Numpad8","ArrowUp"],                  // Forward
+            ["Numpad5","ArrowDown"],                // Backward
+            ["Numpad6","ArrowRight"],               // TurnRight
+            ["Numpad4","ArrowLeft"],                // TurnLeft
+            ["Numpad7","Comma"],                    // ShootLeft
+            ["Numpad9","Period"],                   // ShootRight
+            ["Numpad1","KeyB"],                     // TurretLeft
+            ["Numpad3","KeyM"],                     // TurretRight
+            ["Numpad2","KeyN"],                     // TurretShoot
 
         ],
-    ]
+    ];
 
     export const BUMPERS:util.Vector2[][] = [
         [   // Forward
@@ -85,5 +81,5 @@ module config {
             new util.Vector2(-1,-1),
             new util.Vector2(-0.5,-1),
         ],
-    ]
+    ];
 }
