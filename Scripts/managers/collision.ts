@@ -1,15 +1,15 @@
 module managers {
     export class Collision {
-        public static isColliding(go1: objects.GameObject, go2: objects.GameObject, go1Offset:util.Vector2 = new util.Vector2(0, 0), rotationDelta:number): boolean {
+        public static isColliding(go1: objects.GameObject, go2: objects.GameObject, go1Offset: util.Vector2 = new util.Vector2(0, 0), rotationDelta: number): boolean {
 
-            let axes:util.Vector2[] = [
+            let axes: util.Vector2[] = [
                 new util.Vector2(Math.cos(go1.rotation * Math.PI / 180), Math.sin(go1.rotation * Math.PI / 180)),
                 new util.Vector2(-Math.sin(go1.rotation * Math.PI / 180), Math.cos(go1.rotation * Math.PI / 180)),
                 new util.Vector2(Math.cos(go2.rotation * Math.PI / 180), Math.sin(go2.rotation * Math.PI / 180)),
                 new util.Vector2(-Math.sin(go2.rotation * Math.PI / 180), Math.cos(go2.rotation * Math.PI / 180))
             ];
 
-            if(rotationDelta != 0) {
+            if (rotationDelta != 0) {
                 axes[0] = util.Vector2.Rotate(axes[0], rotationDelta);
                 axes[1] = util.Vector2.Rotate(axes[1], rotationDelta);
             }
@@ -58,7 +58,7 @@ module managers {
             return true;
         }
 
-        public static isCollidingWithPoint(go1: objects.GameObject, go2: objects.GameObject): boolean {
+        public static isCollidingWithCircle(go1: objects.GameObject, go2: objects.GameObject, isPoint: boolean = false): boolean {
             let axes: util.Vector2[] = [
                 new util.Vector2(Math.cos(go1.rotation * Math.PI / 180), Math.sin(go1.rotation * Math.PI / 180)),
                 new util.Vector2(-Math.sin(go1.rotation * Math.PI / 180), Math.cos(go1.rotation * Math.PI / 180))
@@ -79,12 +79,16 @@ module managers {
                 }
 
                 // project point to each axis
-                let proj_v2: number = util.Vector2.Dot(new util.Vector2(go2.x, go2.y), axes[i]);
+                let proj_v2: number = util.Vector2.Dot(go2.Position, axes[i]);
 
                 // overlap check
                 let r1: number = max1 - min1;
+                let r2: number = 0;
                 let r: number = Math.max(max1, proj_v2) - Math.min(min1, proj_v2);
-                if (r1 < r) {
+                if (!isPoint) {
+                    r2 = go2.HalfHeight;
+                }
+                if (r1 + r2 < r) {
                     return false;
                 }
             }

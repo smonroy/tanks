@@ -26,6 +26,8 @@
         { id: "block_d1", src: "./Assets/Images/block_d1.png" },
         { id: "block_d2", src: "./Assets/Images/block_d2.png" },
         { id: "block_d2_2", src: "./Assets/Images/block_d2_2.png" },
+        { id: "speedUp", src: "./Assets/Images/block_sp.png" },
+        { id: "fireRateUp", src: "./Assets/Images/block_rp.png" },
     ];
     function Init() {
         assetManager = new createjs.LoadQueue();

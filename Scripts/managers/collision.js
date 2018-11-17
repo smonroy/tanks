@@ -51,7 +51,7 @@ var managers;
             }
             return true;
         }
-        static isCollidingWithPoint(go1, go2) {
+        static isCollidingWithCircle(go1, go2, isPoint = false) {
             let axes = [
                 new util.Vector2(Math.cos(go1.rotation * Math.PI / 180), Math.sin(go1.rotation * Math.PI / 180)),
                 new util.Vector2(-Math.sin(go1.rotation * Math.PI / 180), Math.cos(go1.rotation * Math.PI / 180))
@@ -69,11 +69,15 @@ var managers;
                     max1 = Math.max(max1, proj_v1);
                 }
                 // project point to each axis
-                let proj_v2 = util.Vector2.Dot(new util.Vector2(go2.x, go2.y), axes[i]);
+                let proj_v2 = util.Vector2.Dot(go2.Position, axes[i]);
                 // overlap check
                 let r1 = max1 - min1;
+                let r2 = 0;
                 let r = Math.max(max1, proj_v2) - Math.min(min1, proj_v2);
-                if (r1 < r) {
+                if (!isPoint) {
+                    r2 = go2.HalfHeight;
+                }
+                if (r1 + r2 < r) {
                     return false;
                 }
             }

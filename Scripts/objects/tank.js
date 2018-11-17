@@ -12,7 +12,9 @@ var objects;
             this._initialize();
             this._playerIndex = playerNumber - 1;
             this._speed = 0.5;
+            this._origSpeed = 0.5;
             this._rotationSpeed = 0.5;
+            this._origRotationSpeed = 0.5;
             this._turretOffset = 0.4;
             this._forward = new util.Vector2(0, -this.HalfHeight * scale);
             this._right = new util.Vector2(this.HalfWidth * scale, 0);
@@ -24,7 +26,7 @@ var objects;
         get IsStunned() {
             return this._stunned;
         }
-        _isPassable(action, xDelta = 0, yDelta = 0, rotation = 0) {
+        _isPassable(action, xDelta = 0, yDelta = 0) {
             let forward = this._forward;
             let right = this._right;
             let rotationDelta;
@@ -39,14 +41,15 @@ var objects;
                 rotationDelta = -this._rotationSpeed;
             }
             // tank collision
-            if (util.Vector2.ManhatDistance(this._enemy.Position, this.Position) < (this.Height * this.scaleY * 50)) {
+            if (util.Vector2.ManhatDistance(this._enemy.Position, this.Position) < (this.Height * this.scaleY * 5)) {
                 if (managers.Collision.isColliding(this, this._enemy, new util.Vector2(xDelta, yDelta), rotationDelta)) {
                     return false;
                 }
             }
             for (let i = 0; i < config.BUMPERS[action].length; i++) {
                 let bumper = config.BUMPERS[action][i];
-                if (managers.Game.map.GetCellContent(this.x + xDelta + (forward.x * bumper.y) + (right.x * bumper.x), this.y + yDelta + (forward.y * bumper.y) + (right.y * bumper.x)) != config.BlockType.__) {
+                let cellCalc = new util.Vector2(this.x + xDelta + (forward.x * bumper.y) + (right.x * bumper.x), this.y + yDelta + (forward.y * bumper.y) + (right.y * bumper.x));
+                if (managers.Game.map.GetCellContent(cellCalc.x, cellCalc.y) != config.BlockType.__) {
                     return false;
                 }
             }
@@ -55,6 +58,12 @@ var objects;
         Reset() {
             this.x = this._startPoint.x;
             this.y = this._startPoint.y;
+        }
+        SpeedUp() {
+            if (this._speed < this._origSpeed * 4) {
+                this._speed += this._origSpeed;
+                this._rotationSpeed += this._origRotationSpeed;
+            }
         }
         SetEnemy(enemy) {
             this._enemy = enemy;
@@ -182,13 +191,15 @@ var objects;
                 }
             }
             this._bullets.forEach(bullet => {
-                if (!this._enemy.IsStunned && !bullet.IsAvailable) {
+                if (!bullet.IsAvailable) {
                     bullet.Update();
-                    if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 75)) {
-                        if (managers.Collision.isCollidingWithPoint(this._enemy, bullet)) {
-                            bullet.Deactivate();
-                            console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
-                            this._enemy.Stun();
+                    if (!this._enemy.IsStunned) {
+                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 18)) {
+                            if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
+                                bullet.Deactivate();
+                                console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
+                                this._enemy.Stun();
+                            }
                         }
                     }
                 }

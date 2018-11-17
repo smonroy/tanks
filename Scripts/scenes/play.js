@@ -17,8 +17,7 @@ var scenes;
         }
         ;
         Update() {
-            this._map.tank1.Update();
-            this._map.tank2.Update();
+            this._map.Update();
             // if (util.Vector2.ManhatDistance(this._map.tank1.Position, this._map.tank2.Position) < (this._map.tank1.Height * 5)) {
             //     if (managers.Collision.isColliding(this._map.tank1, this._map.tank2)) {
             //         this._map.tank1.Reset();
