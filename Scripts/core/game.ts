@@ -21,13 +21,16 @@
         {id:"tank2", src:"./Assets/Images/tank2.png"},
         {id:"turret1", src:"./Assets/Images/turret1.png"},
         {id:"turret2", src:"./Assets/Images/turret2.png"},
-        {id:"bullet", src:"./Assets/Images/bullet1.png"},
+        {id:"bullet1", src:"./Assets/Images/bullet1.png"},
+        {id:"bullet2", src:"./Assets/Images/bullet2.png"},
         {id:"block_in", src:"./Assets/Images/block_in.png"},
         {id:"block_b1", src:"./Assets/Images/block_b1.png"},
         {id:"block_b2", src:"./Assets/Images/block_b2.png"},
         {id:"block_d1", src:"./Assets/Images/block_d1.png"},
         {id:"block_d2", src:"./Assets/Images/block_d2.png"},
         {id:"block_d2_2", src:"./Assets/Images/block_d2_2.png"},
+        {id:"speedUp", src:"./Assets/Images/block_sp.png"},
+        {id:"fireRateUp", src:"./Assets/Images/block_rp.png"},
     ];
 
     function Init():void {
