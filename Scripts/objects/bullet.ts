@@ -2,12 +2,13 @@ module objects {
     export class Bullet extends objects.GameObject {
         private _speed: number;
         private _active: boolean;
+        private _type:number; // type of bullet: 1 = body bullet, 2 = turret bullet
 
         // constructors
-        constructor(x: number, y: number, angle: number) {
-            super("bullet");
-            this._speed = 6;
-            this.Activate(x, y, angle);
+        constructor(x: number, y: number, angle: number, type:number = 1) {
+            super("bullet" + type);
+//            this._speed = 6;
+            this.Activate(x, y, angle, type);
             this.Start();
         }
 
@@ -19,9 +20,12 @@ module objects {
             this.regY = this.HalfHeight;
         }
 
-        public Activate(x: number, y: number, angle: number): void {
+        public Activate(x: number, y: number, angle: number, type:number = 1): void {
             this._active = true;
+            this._type = type;
+            this._speed = type == 1 ? 7: 4;
             this.rotation = angle;
+            this.image = managers.Game.assetMnager.getResult("bullet" + type) as HTMLImageElement;
             this.x = x;
             this.y = y;
         }

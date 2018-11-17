@@ -2,10 +2,10 @@ var objects;
 (function (objects) {
     class Bullet extends objects.GameObject {
         // constructors
-        constructor(x, y, angle) {
-            super("bullet");
-            this._speed = 6;
-            this.Activate(x, y, angle);
+        constructor(x, y, angle, type = 1) {
+            super("bullet" + type);
+            //            this._speed = 6;
+            this.Activate(x, y, angle, type);
             this.Start();
         }
         // private methods
@@ -14,9 +14,12 @@ var objects;
             this.regX = this.HalfWidth;
             this.regY = this.HalfHeight;
         }
-        Activate(x, y, angle) {
+        Activate(x, y, angle, type = 1) {
             this._active = true;
+            this._type = type;
+            this._speed = type == 1 ? 7 : 4;
             this.rotation = angle;
+            this.image = managers.Game.assetMnager.getResult("bullet" + type);
             this.x = x;
             this.y = y;
         }
