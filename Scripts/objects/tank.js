@@ -27,6 +27,9 @@ var objects;
         get IsStunned() {
             return this._stunned;
         }
+        get Bullets() {
+            return this._bullets;
+        }
         _isPassable(action, xDelta = 0, yDelta = 0) {
             let forward = this._forward;
             let right = this._right;
@@ -66,6 +69,12 @@ var objects;
                 this._rotationSpeed += this._origRotationSpeed;
             }
         }
+        Stun() {
+            this._stunned = true;
+            this._turret.alpha = 0.5;
+            this.alpha = 0.5;
+            this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
+        }
         SetEnemy(enemy) {
             this._enemy = enemy;
         }
@@ -87,7 +96,7 @@ var objects;
                     return;
                 }
             }
-            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, turret ? 2 : 1);
+            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, "P" + (this._playerIndex + 1), turret ? 2 : 1);
             this._bullets[this._bulletsNum] = newBullet;
             this._bulletsNum++;
             this.parent.addChild(newBullet);
@@ -163,56 +172,49 @@ var objects;
                         }
                     }
                 }
-                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Shoot1])) {
-                    if (!this._shoot1) {
-                        this._activateBullet();
-                        this._shoot1 = true;
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootLeft])) {
+                    if (this._shootDelay[config.ShootType.left] < Date.now()) {
+                        this._activateBullet(false, 0, -0.7);
+                        this._shootDelay[config.ShootType.left] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.left];
+                    }
+                }
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootRight])) {
+                    if (this._shootDelay[config.ShootType.right] < Date.now()) {
+                        this._activateBullet(false, 0, 0.7);
+                        this._shootDelay[config.ShootType.right] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.right];
+                    }
+                }
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
+                    if (this._shootDelay[config.ShootType.turret] < Date.now()) {
+                        this._activateBullet(true, this._turret.GetTurretRotation());
+                        this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
                     }
                 }
                 else {
-                    this._shoot1 = false;
-                }
-                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
-                    if (!this._shoot2) {
-                        this._activateBullet(true, this._turret.GetTurretRotation());
-                        this._shoot2 = true;
+                    //Reset the player's stun state once the period is done
+                    if (createjs.Ticker.getTicks() > this._stunFrame) {
+                        this._turret.alpha = 1;
+                        this.alpha = 1;
+                        this._stunned = false;
                     }
                 }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootLeft])) {
-                if (this._shootDelay[config.ShootType.left] < Date.now()) {
-                    this._activateBullet(false, 0, -0.7);
-                    this._shootDelay[config.ShootType.left] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.left];
-                }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootRight])) {
-                if (this._shootDelay[config.ShootType.right] < Date.now()) {
-                    this._activateBullet(false, 0, 0.7);
-                    this._shootDelay[config.ShootType.right] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.right];
-                }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
-                if (this._shootDelay[config.ShootType.turret] < Date.now()) {
-                    this._activateBullet(true, this._turret.GetTurretRotation());
-                    this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
-                }
-            }
-            this._bullets.forEach(bullet => {
-                if (!bullet.IsAvailable) {
-                    bullet.Update();
-                    if (!this._enemy.IsStunned) {
-                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 18)) {
-                            if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
-                                bullet.Deactivate();
-                                console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
-                                this._enemy.Stun();
+                this._bullets.forEach(bullet => {
+                    if (!bullet.IsAvailable) {
+                        bullet.Update();
+                        if (!this._enemy.IsStunned) {
+                            if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 18)) {
+                                if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
+                                    bullet.Deactivate();
+                                    console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
+                                    this._enemy.Stun();
+                                }
                             }
                         }
                     }
-                }
-            });
-            this._turret.Update();
-            this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);
+                });
+                this._turret.Update();
+                this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);
+            }
         }
         Destroy() {
             throw new Error("Method not implemented.");
