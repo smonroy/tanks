@@ -2,12 +2,13 @@ module managers {
     export class Input {
 
         public static keys: { [key: string]: boolean } = {}
-        public static isKeydown(key: string): boolean {
-            //if (Input.keys[key] === undefined) {
-           //     return false;
-           // }else {
-                return Input.keys[key];
-            //}
+        public static isKeydown(keys:string[]): boolean {
+            for (let index = 0; index < keys.length; index++) {
+                if(Input.keys[keys[index]]) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         static ShowInput(e: KeyboardEvent, not?: boolean) {
@@ -18,12 +19,10 @@ module managers {
             }
         }
         static HandleInput(e: KeyboardEvent) {
-//            this.ShowInput(e);
             Input.keys[e.code] = true;
 
         }
         static HandleUpInput(e) {
-//            this.ShowInput(e, true);
             Input.keys[e.code] = false;
         }
     }

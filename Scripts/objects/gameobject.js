@@ -33,10 +33,27 @@ var objects;
         set HalfHeight(newValue) {
             this._halfHeight = newValue;
         }
+        get Position() {
+            return new util.Vector2(this.x, this.y);
+        }
         // private methods
         _initialize() {
             this.Width = this.getBounds().width;
             this.Height = this.getBounds().height;
+        }
+        getCorners(xOffset = 0, yOffset = 0, rotationDelta = 0) {
+            let verts = [
+                new util.Vector2(-this.HalfWidth * this.scaleX, -this.HalfHeight * this.scaleY),
+                new util.Vector2(this.HalfWidth * this.scaleX, -this.HalfHeight * this.scaleY),
+                new util.Vector2(this.HalfWidth * this.scaleX, this.HalfHeight * this.scaleY),
+                new util.Vector2(-this.HalfWidth * this.scaleX, this.HalfHeight * this.scaleY)
+            ];
+            for (let i = 0; i < verts.length; i++) {
+                verts[i] = util.Vector2.Rotate(verts[i], this.rotation + rotationDelta);
+                verts[i].x += this.x + xOffset;
+                verts[i].y += this.y + yOffset;
+            }
+            return verts;
         }
     }
     objects.GameObject = GameObject;

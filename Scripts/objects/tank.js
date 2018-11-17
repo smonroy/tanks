@@ -1,33 +1,47 @@
 var objects;
 (function (objects) {
     class Tank extends objects.GameObject {
-        constructor(playerNumner, x, y, scale) {
-            super("tank");
+        constructor(playerNumber, x, y, scale, turret) {
+            super("tank" + playerNumber);
             this.x = x;
             this.y = y;
+            this._startPoint = new util.Vector2(this.x, this.y);
             this.scaleX = scale;
             this.scaleY = scale;
-            this._playerIndex = playerNumner - 1;
-            this._speed = 2;
-            this._rotationSpeed = 2;
+            this._turret = turret;
+            this._initialize();
+            this._playerIndex = playerNumber - 1;
+            this._speed = 0.5;
+            this._rotationSpeed = 0.5;
+            this._turretOffset = 0.4;
             this._forward = new util.Vector2(0, -this.HalfHeight * scale);
             this._right = new util.Vector2(this.HalfWidth * scale, 0);
             this._bullets = new Array();
             this._bulletsNum = 0;
             this.Start();
         }
-        _isPassable(action, xDelta = 0, yDelta = 0) {
-            let xScalar = 0;
-            let yScalar = 1;
+        get Bullets() {
+            return this._bullets;
+        }
+        _isPassable(action, xDelta = 0, yDelta = 0, rotation = 0) {
             let forward = this._forward;
             let right = this._right;
+            let rotationDelta;
             if (action == config.ActionEnum.TurnRight) {
                 forward = util.Vector2.Rotate(this._forward, this._rotationSpeed);
                 right = util.Vector2.Rotate(this._right, this._rotationSpeed);
+                rotationDelta = this._rotationSpeed;
             }
             if (action == config.ActionEnum.TurnLeft) {
                 forward = util.Vector2.Rotate(this._forward, -this._rotationSpeed);
                 right = util.Vector2.Rotate(this._right, -this._rotationSpeed);
+                rotationDelta = -this._rotationSpeed;
+            }
+            // tank collision
+            if (util.Vector2.ManhatDistance(this._enemy.Position, this.Position) < (this.Height * this.scaleY * 50)) {
+                if (managers.Collision.isColliding(this, this._enemy, new util.Vector2(xDelta, yDelta), rotationDelta)) {
+                    return false;
+                }
             }
             for (let i = 0; i < config.BUMPERS[action].length; i++) {
                 let bumper = config.BUMPERS[action][i];
@@ -38,20 +52,29 @@ var objects;
             return true;
         }
         Reset() {
-            throw new Error("Method not implemented.");
+            this.x = this._startPoint.x;
+            this.y = this._startPoint.y;
         }
-        _activateBullet() {
+        SetEnemy(enemy) {
+            this._enemy = enemy;
+        }
+        _activateBullet(turret = false, localRotation = 0) {
+            let spawnPoint = util.Vector2.Rotate(this._forward, localRotation);
+            if (turret) {
+                spawnPoint.x -= (this._forward.x * this._turretOffset);
+                spawnPoint.y -= (this._forward.y * this._turretOffset);
+            }
+            spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));
             for (let i = 0; i < this._bullets.length; i++) {
                 if (this._bullets[i].IsAvailable()) {
-                    this._bullets[i].Activate(this.x, this.y, this.rotation);
+                    this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
                     return;
                 }
             }
-            let newBullet = new objects.Bullet(this.x, this.y, this.rotation);
+            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
             this._bullets[this._bulletsNum] = newBullet;
             this._bulletsNum++;
             this.parent.addChild(newBullet);
-            console.log("bullets: " + this._bulletsNum);
         }
         _rotate(rotation) {
             this.rotation += rotation;
@@ -132,9 +155,20 @@ var objects;
             else {
                 this._shoot1 = false;
             }
+            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
+                if (!this._shoot2) {
+                    this._activateBullet(true, this._turret.GetTurretRotation());
+                    this._shoot2 = true;
+                }
+            }
+            else {
+                this._shoot2 = false;
+            }
             this._bullets.forEach(bullet => {
                 bullet.Update();
             });
+            this._turret.Update();
+            this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);
         }
         Destroy() {
             throw new Error("Method not implemented.");
