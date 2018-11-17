@@ -45,7 +45,7 @@ var objects;
                 rotationDelta = -this._rotationSpeed;
             }
             // tank collision
-            if (util.Vector2.ManhatDistance(this._enemy.Position, this.Position) < (this.Height * this.scaleY * 5)) {
+            if (util.Vector2.ManhatDistance(this._enemy.Position, this.Position) < (this.Height * this.scaleY * 2)) {
                 if (managers.Collision.isColliding(this, this._enemy, new util.Vector2(xDelta, yDelta), rotationDelta)) {
                     return false;
                 }
