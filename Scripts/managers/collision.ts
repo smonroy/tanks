@@ -51,5 +51,40 @@ module managers {
 
             return true;
         }
+
+        public static isCollidingWithPoint(go1: objects.GameObject, go2: objects.GameObject): boolean {
+            let axes: util.Vector2[] = [
+                new util.Vector2(Math.cos(go1.rotation), Math.sin(go1.rotation)),
+                new util.Vector2(-Math.sin(go1.rotation), Math.cos(go1.rotation))
+            ];
+
+            let verts1: util.Vector2[] = go1.getCorners();
+
+            // project vertices to each axis
+            for (let i: number = 0; i < axes.length; ++i) {
+                // find max and min from verts1
+                let proj_v1: number = util.Vector2.Dot(verts1[0], axes[i]);
+                let min1: number = proj_v1;
+                let max1: number = proj_v1;
+                for (let j: number = 1; j < verts1.length; ++j) {
+                    proj_v1 = util.Vector2.Dot(verts1[j], axes[i]);
+                    min1 = Math.min(min1, proj_v1);
+                    max1 = Math.max(max1, proj_v1);
+                }
+
+                // find max and min from verts2
+                let proj_v2: number = util.Vector2.Dot(new util.Vector2(go2.x, go2.y), axes[i]);
+
+                // overlap check
+                let r1: number = max1 - min1;
+                let r: number = Math.max(max1, proj_v2) - Math.min(min1, proj_v2);
+                //console.log (r, r1, r2);
+                if (r1 < r) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

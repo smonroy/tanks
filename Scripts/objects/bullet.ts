@@ -2,7 +2,6 @@ module objects {
     export class Bullet extends objects.GameObject {
         private _speed: number;
         private _active: boolean;
-        private _owner: string;
 
         // constructors
         constructor(x: number, y: number, angle: number) {

@@ -20,6 +20,9 @@ var objects;
             this._bulletsNum = 0;
             this.Start();
         }
+        get Bullets() {
+            return this._bullets;
+        }
         _isPassable(action, xDelta = 0, yDelta = 0) {
             //let xScalar = 0;
             //let yScalar = 1;
