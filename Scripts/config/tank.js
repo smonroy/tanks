@@ -18,14 +18,14 @@ var config;
     })(PlayerEnum = config.PlayerEnum || (config.PlayerEnum = {}));
     config.INPUT_KEY = [
         [
-            "KeyW",
-            "KeyS",
-            "KeyD",
-            "KeyA",
-            "KeyE",
-            "KeyZ",
-            "KeyC",
-            "KeyX",
+            ["KeyW"],
+            ["KeyS"],
+            ["KeyD"],
+            ["KeyA"],
+            ["KeyE", "KeyQ"],
+            ["KeyZ"],
+            ["KeyC"],
+            ["KeyX"],
         ],
         // [ // Player 2
         //     "ArrowUp",      // Forward
@@ -38,14 +38,14 @@ var config;
         //     "KeyN",         // TurretShoot
         // ],
         [
-            "Numpad8",
-            "Numpad5",
-            "Numpad6",
-            "Numpad4",
-            "Numpad9",
-            "Numpad1",
-            "Numpad3",
-            "Numpad2",
+            ["Numpad8", "ArrowUp"],
+            ["Numpad5", "ArrowDown"],
+            ["Numpad6", "ArrowRight"],
+            ["Numpad4", "ArrowLeft"],
+            ["Numpad9", "Numpad7", "Space"],
+            ["Numpad1", "KeyB"],
+            ["Numpad3", "KeyM"],
+            ["Numpad2", "KeyN"],
         ],
     ];
     config.BUMPERS = [

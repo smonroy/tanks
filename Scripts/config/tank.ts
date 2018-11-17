@@ -15,16 +15,17 @@ module config {
         Player2
     }
 
-    export const INPUT_KEY:string[][] = [
+    
+    export const INPUT_KEY:string[][][] = [
         [ // Player 1
-            "KeyW",         // Forward
-            "KeyS",         // Backward
-            "KeyD",         // TurnRight
-            "KeyA",         // TurnLeft
-            "KeyE",         // Shoot 1
-            "KeyZ",         // TurretLeft
-            "KeyC",         // TurretRight
-            "KeyX",         // TurretShoot
+            ["KeyW"],         // Forward
+            ["KeyS"],         // Backward
+            ["KeyD"],         // TurnRight
+            ["KeyA"],         // TurnLeft
+            ["KeyE", "KeyQ"], // Shoot 1
+            ["KeyZ"],         // TurretLeft
+            ["KeyC"],         // TurretRight
+            ["KeyX"],         // TurretShoot
         ],
         // [ // Player 2
         //     "ArrowUp",      // Forward
@@ -38,14 +39,14 @@ module config {
 
         // ],
         [ // Player 2
-            "Numpad8",      // Forward
-            "Numpad5",      // Backward
-            "Numpad6",      // TurnRight
-            "Numpad4",      // TurnLeft
-            "Numpad9",      // Shoot 1
-            "Numpad1",      // TurretLeft
-            "Numpad3",      // TurretRight
-            "Numpad2",      // TurretShoot
+            ["Numpad8","ArrowUp"],                  // Forward
+            ["Numpad5","ArrowDown"],                // Backward
+            ["Numpad6","ArrowRight"],               // TurnRight
+            ["Numpad4","ArrowLeft"],                // TurnLeft
+            ["Numpad9","Numpad7","Space"],     // Shoot 1
+            ["Numpad1","KeyB"],                     // TurretLeft
+            ["Numpad3","KeyM"],                     // TurretRight
+            ["Numpad2","KeyN"],                     // TurretShoot
 
         ],
     ]
