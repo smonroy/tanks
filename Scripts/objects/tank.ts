@@ -15,7 +15,11 @@ module objects {
         private _turretOffset:number;   // factor of halfHeight
         private _enemy:objects.Tank;
 
-        constructor(playerNumber: number, x: number, y: number, scale: number, turret:objects.Turret) {
+        get Bullets(): objects.Bullet[] {
+            return this._bullets;
+        }
+
+        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret) {
             super("tank" + playerNumber);
             this.x = x;
             this.y = y;
@@ -83,7 +87,7 @@ module objects {
                 spawnPoint.x -= (this._forward.x * this._turretOffset);
                 spawnPoint.y -= (this._forward.y * this._turretOffset);
             }
-            spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));            
+            spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));
             for (let i: number = 0; i < this._bullets.length; i++) {
                 if (this._bullets[i].IsAvailable()) {
                     this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
@@ -184,7 +188,7 @@ module objects {
                 bullet.Update();
             });
             this._turret.Update();
-            this._turret.Sync(this.x - (this._forward.x * this._turretOffset) , this.y - (this._forward.y * this._turretOffset), this.rotation);
+            this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);
         }
         public Destroy(): void {
             throw new Error("Method not implemented.");

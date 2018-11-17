@@ -36,21 +36,14 @@ var objects;
                 let blockType = managers.Game.map.GetCellContent(this.x, this.y);
                 switch (blockType) {
                     case config.BlockType.__:
-                        break;
                     case config.BlockType.IN:
                         break;
                     case config.BlockType.D2:
-                        this.Deactivate();
-                        break;
                     case null:
                         this.Deactivate();
                         break;
                     default:
-                        managers.Game.map.DestroyBlock(this.x, this.y);
-                        if (blockType == config.BlockType.B1)
-                            managers.Game.scoreBoard.SubstractBase1();
-                        if (blockType == config.BlockType.B2)
-                            managers.Game.scoreBoard.SubstractBase2();
+                        managers.Game.map.GetBlock(this.x, this.y).Health--;
                         this.Deactivate();
                         break;
                 }

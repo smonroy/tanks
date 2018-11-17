@@ -20,6 +20,9 @@ var objects;
             this._bulletsNum = 0;
             this.Start();
         }
+        get Bullets() {
+            return this._bullets;
+        }
         _isPassable(action, xDelta = 0, yDelta = 0, rotation = 0) {
             let forward = this._forward;
             let right = this._right;
