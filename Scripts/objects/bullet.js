@@ -8,6 +8,9 @@ var objects;
             this.Activate(x, y, angle, type);
             this.Start();
         }
+        get IsAvailable() {
+            return !this._active;
+        }
         // private methods
         // public methods
         Start() {
@@ -26,9 +29,6 @@ var objects;
         Deactivate() {
             this._active = false;
             this.x = -100;
-        }
-        IsAvailable() {
-            return !this._active;
         }
         Update() {
             if (this._active) {

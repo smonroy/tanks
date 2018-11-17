@@ -12,11 +12,26 @@ module objects {
         set Health(newHealth: number) {
             this._health = newHealth;
             if (this._health < 1) {
-                if (this.blockType === config.BlockType.B1) {
-                    managers.Game.scoreBoard.SubstractBase1();
-                }
-                else if (this.blockType === config.BlockType.B2) {
-                    managers.Game.scoreBoard.SubstractBase2();
+                switch (this.blockType) {
+                    case config.BlockType.B1:
+                        managers.Game.scoreBoard.SubstractBase1();
+                        break;
+                    case config.BlockType.B2:
+                        managers.Game.scoreBoard.SubstractBase2();
+                        break;
+                    default:
+                        let randPowerup = Math.floor(Math.random() * 8);
+                        if (randPowerup === 1) {
+                            let powerup: objects.Powerup = new objects.Powerup(config.PowerupType.SpeedUp, this.x, this.y);
+                            managers.Game.map.powerups.push(powerup);
+                            this.parent.addChild(powerup);
+                        }
+                        else if (randPowerup === 2) {
+                            let powerup: objects.Powerup = new objects.Powerup(config.PowerupType.FireRateUp, this.x, this.y);
+                            managers.Game.map.powerups.push(powerup);
+                            this.parent.addChild(powerup);
+                        }
+                        break;
                 }
                 managers.Game.map.DestroyBlock(this.x, this.y);
             }

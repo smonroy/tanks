@@ -3,7 +3,9 @@ module objects {
     export class Tank extends GameObject {
 
         private _speed:number;
-        private _rotationSpeed:number;
+        private _origSpeed: number;
+        private _rotationSpeed: number;
+        private _origRotationSpeed: number;
         private _playerIndex:number;
         private _forward:util.Vector2;
         private _right:util.Vector2;
@@ -14,12 +16,19 @@ module objects {
         private _turret:objects.Turret;
         private _turretOffset:number;   // factor of halfHeight
         private _enemy:objects.Tank;
+        private _stunned: boolean;
+        private _stunFrame: number;
+        private _stunDelay: number;
+  
+        get IsStunned(): boolean {
+            return this._stunned;
+        }
 
         get Bullets(): objects.Bullet[] {
             return this._bullets;
         }
 
-        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret) {
+        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 179) {
             super("tank" + playerNumber);
             this.x = x;
             this.y = y;
@@ -30,20 +39,23 @@ module objects {
             this._initialize();
             this._playerIndex = playerNumber - 1;
             this._speed = 0.5;
+            this._origSpeed = 0.5;
             this._rotationSpeed = 0.5;
+            this._origRotationSpeed = 0.5;
             this._turretOffset = 0.4;
             this._forward = new util.Vector2(0, -this.HalfHeight * scale);
             this._right = new util.Vector2(this.HalfWidth * scale, 0);
             this._bullets = new Array<objects.Bullet>();
             this._bulletsNum = 0;
+            this._stunDelay = stunDelay;
             this.Start();
         }
 
-        private _isPassable(action:config.ActionEnum, xDelta:number = 0, yDelta:number = 0, rotation:number = 0): boolean {
+        private _isPassable(action: config.ActionEnum, xDelta: number = 0, yDelta: number = 0): boolean {
             let forward = this._forward;
             let right = this._right;
-            let rotationDelta:number;
-            
+            let rotationDelta: number;
+
             if (action == config.ActionEnum.TurnRight) {
                 forward = util.Vector2.Rotate(this._forward, this._rotationSpeed);
                 right = util.Vector2.Rotate(this._right, this._rotationSpeed);
@@ -56,7 +68,7 @@ module objects {
             }
 
             // tank collision
-            if (util.Vector2.ManhatDistance(this._enemy.Position, this.Position) < (this.Height * this.scaleY * 50)) {
+            if (util.Vector2.ManhatDistance(this._enemy.Position, this.Position) < (this.Height * this.scaleY * 5)) {
                 if (managers.Collision.isColliding(this, this._enemy, new util.Vector2(xDelta, yDelta), rotationDelta)) {
                     return false;
                 }
@@ -64,9 +76,10 @@ module objects {
 
             for (let i: number = 0; i < config.BUMPERS[action].length; i++) {
                 let bumper: util.Vector2 = config.BUMPERS[action][i];
-                if (managers.Game.map.GetCellContent(this.x + xDelta + (forward.x * bumper.y) + (right.x * bumper.x),
-                    this.y + yDelta + (forward.y * bumper.y) + (right.y * bumper.x)) != config.BlockType.__) {
-                    return false
+                let cellCalc: util.Vector2 = new util.Vector2(this.x + xDelta + (forward.x * bumper.y) + (right.x * bumper.x),
+                    this.y + yDelta + (forward.y * bumper.y) + (right.y * bumper.x));
+                if (managers.Game.map.GetCellContent(cellCalc.x, cellCalc.y) != config.BlockType.__) {
+                    return false;
                 }
             }
             return true;
@@ -77,7 +90,21 @@ module objects {
             this.y = this._startPoint.y;
         }
 
-        public SetEnemy(enemy:objects.Tank) {
+        public SpeedUp() {
+            if (this._speed < this._origSpeed * 4) {
+                this._speed += this._origSpeed;
+                this._rotationSpeed += this._origRotationSpeed;
+            }
+        }
+      
+        public Stun() {
+            this._stunned = true;
+            this._turret.alpha = 0.5;
+            this.alpha = 0.5;
+            this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
+        }
+
+        public SetEnemy(enemy: objects.Tank) {
             this._enemy = enemy;
         }
 
@@ -98,7 +125,7 @@ module objects {
                     return;
                 }
             }
-            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, turret ? 2 : 1);
+            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, "P" + (this._playerIndex + 1), turret ? 2 : 1);
             this._bullets[this._bulletsNum] = newBullet;
             this._bulletsNum++;
             this.parent.addChild(newBullet);
@@ -119,80 +146,100 @@ module objects {
             let xd = this._speed * Math.sin(this.rotation * Math.PI / 180);
             let yd = this._speed * Math.cos(this.rotation * Math.PI / 180);
 
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Forward])) {
-                if (this._isPassable(config.ActionEnum.Forward, xd, -yd)) {
-                    this.x += xd;
-                    this.y -= yd;
-                } else {
-                    if (this._isPassable(config.ActionEnum.TurnRight, xd / 2, -yd / 2)) {
+            if (!this._stunned) {
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Forward])) {
+                    if (this._isPassable(config.ActionEnum.Forward, xd, -yd)) {
+                        this.x += xd;
+                        this.y -= yd;
+                    } else {
+                        if (this._isPassable(config.ActionEnum.TurnRight, xd / 2, -yd / 2)) {
+                            this._rotate(this._rotationSpeed);
+                        } else if (this._isPassable(config.ActionEnum.TurnLeft, xd / 2, -yd / 2)) {
+                            this._rotate(-this._rotationSpeed);
+                        }
+                    }
+                }
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Backward])) {
+                    if (this._isPassable(config.ActionEnum.Backward, -xd, yd)) {
+                        this.x -= xd;
+                        this.y += yd;
+                    } else {
+                        if (this._isPassable(config.ActionEnum.TurnRight, -xd / 2, yd / 2)) {
+                            this._rotate(this._rotationSpeed);
+                        } else if (this._isPassable(config.ActionEnum.TurnLeft, -xd / 2, yd / 2)) {
+                            this._rotate(-this._rotationSpeed);
+                        }
+                    }
+                }
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnRight])) {
+                    if (this._isPassable(config.ActionEnum.TurnRight)) {
                         this._rotate(this._rotationSpeed);
-                    } else if (this._isPassable(config.ActionEnum.TurnLeft, xd / 2, -yd / 2)) {
+                    } else {
+                        if (this._isPassable(config.ActionEnum.TurnRight, xd / 2, -yd / 2)) {
+                            this.x += xd / 2;
+                            this.y -= yd / 2;
+                        } else if (this._isPassable(config.ActionEnum.TurnRight, -xd / 2, yd / 2)) {
+                            this.x -= xd / 2;
+                            this.y += yd / 2;
+                        }
+                    }
+                }
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnLeft])) {
+                    if (this._isPassable(config.ActionEnum.TurnLeft)) {
                         this._rotate(-this._rotationSpeed);
+                    } else {
+                        if (this._isPassable(config.ActionEnum.TurnLeft, xd / 2, -yd / 2)) {
+                            this.x += xd / 2;
+                            this.y -= yd / 2;
+                        } else if (this._isPassable(config.ActionEnum.TurnLeft, -xd / 2, yd / 2)) {
+                            this.x -= xd / 2;
+                            this.y += yd / 2;
+                        }
                     }
                 }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Backward])) {
-                if (this._isPassable(config.ActionEnum.Backward, -xd, yd)) {
-                    this.x -= xd;
-                    this.y += yd;
-                } else {
-                    if (this._isPassable(config.ActionEnum.TurnRight, -xd / 2, yd / 2)) {
-                        this._rotate(this._rotationSpeed);
-                    } else if (this._isPassable(config.ActionEnum.TurnLeft, -xd / 2, yd / 2)) {
-                        this._rotate(-this._rotationSpeed);
-                    }
-                }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnRight])) {
-                if (this._isPassable(config.ActionEnum.TurnRight)) {
-                    this._rotate(this._rotationSpeed);
-                } else {
-                    if (this._isPassable(config.ActionEnum.TurnRight, xd / 2, -yd / 2)) {
-                        this.x += xd / 2;
-                        this.y -= yd / 2;
-                    } else if (this._isPassable(config.ActionEnum.TurnRight, -xd / 2, yd / 2)) {
-                        this.x -= xd / 2;
-                        this.y += yd / 2;
-                    }
-                }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnLeft])) {
-                if (this._isPassable(config.ActionEnum.TurnLeft)) {
-                    this._rotate(-this._rotationSpeed);
-                } else {
-                    if (this._isPassable(config.ActionEnum.TurnLeft, xd / 2, -yd / 2)) {
-                        this.x += xd / 2;
-                        this.y -= yd / 2;
-                    } else if (this._isPassable(config.ActionEnum.TurnLeft, -xd / 2, yd / 2)) {
-                        this.x -= xd / 2;
-                        this.y += yd / 2;
-                    }
-                }
-            }
 
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootLeft])) {
-                if (this._shootDelay[config.ShootType.left] < Date.now()) {
-                    this._activateBullet(false, 0, -0.7);
-                    this._shootDelay[config.ShootType.left] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.left];
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootLeft])) {
+                    if (this._shootDelay[config.ShootType.left] < Date.now()) {
+                        this._activateBullet(false, 0, -0.7);
+                        this._shootDelay[config.ShootType.left] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.left];
+                    }
+                }
+
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootRight])) {
+                    if (this._shootDelay[config.ShootType.right] < Date.now()) {
+                        this._activateBullet(false, 0, 0.7);
+                        this._shootDelay[config.ShootType.right] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.right];
+                    }
+                }
+
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
+                    if (this._shootDelay[config.ShootType.turret] < Date.now()) {
+                        this._activateBullet(true, this._turret.GetTurretRotation());
+                        this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
                 }
             }
-
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootRight])) {
-                if (this._shootDelay[config.ShootType.right] < Date.now()) {
-                    this._activateBullet(false, 0, 0.7);
-                    this._shootDelay[config.ShootType.right] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.right];
-                }
-            }
-
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
-                if (this._shootDelay[config.ShootType.turret] < Date.now()) {
-                    this._activateBullet(true, this._turret.GetTurretRotation());
-                    this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
+            else {
+                //Reset the player's stun state once the period is done
+                if (createjs.Ticker.getTicks() > this._stunFrame) {
+                    this._turret.alpha = 1;
+                    this.alpha = 1;
+                    this._stunned = false;
                 }
             }
 
             this._bullets.forEach(bullet => {
-                bullet.Update();
+                if (!bullet.IsAvailable) {
+                    bullet.Update();
+                    if (!this._enemy.IsStunned) {
+                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 18)) {
+                            if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
+                                bullet.Deactivate();
+                                console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
+                                this._enemy.Stun();
+                            }
+                        }
+                    }
+                }
             });
             this._turret.Update();
             this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);

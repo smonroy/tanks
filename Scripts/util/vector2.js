@@ -50,6 +50,14 @@ var util;
             let result = new util.Vector2(vec1.x - vec2.x, vec1.y - vec2.y);
             return result;
         }
+        static Multiply(vec1, scalar) {
+            let result = new util.Vector2(vec1.x * scalar, vec1.y * scalar);
+            return result;
+        }
+        static Divide(vec1, scalar) {
+            let result = new util.Vector2(vec1.x / scalar, vec1.y / scalar);
+            return result;
+        }
         static Rotate(vec, angle) {
             let sin = Math.sin(angle * Math.PI / 180);
             let cos = Math.cos(angle * Math.PI / 180);

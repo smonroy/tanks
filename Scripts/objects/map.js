@@ -114,6 +114,7 @@ var objects;
                     }
                 }
             }
+            this.powerups = new Array();
             this.tank1.SetEnemy(this.tank2);
             this.tank2.SetEnemy(this.tank1);
             this._scene.addChild(this.tank1);
@@ -125,6 +126,20 @@ var objects;
             this.Reset();
         }
         Update() {
+            this.tank1.Update();
+            this.tank2.Update();
+            this.powerups.forEach(powerup => {
+                if (util.Vector2.ManhatDistance(powerup.Position, this.tank1.Position) < (this.tank1.Height * 5)) {
+                    if (managers.Collision.isCollidingWithCircle(this.tank1, powerup)) {
+                        powerup.applyPowerup(this.tank1);
+                    }
+                }
+                if (util.Vector2.ManhatDistance(powerup.Position, this.tank2.Position) < (this.tank2.Height * 5)) {
+                    if (managers.Collision.isCollidingWithCircle(this.tank2, powerup)) {
+                        powerup.applyPowerup(this.tank2);
+                    }
+                }
+            });
         }
         Destroy() {
         }

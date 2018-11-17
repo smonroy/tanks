@@ -11,6 +11,7 @@ module objects {
         // public
         public grid: config.BlockType[][];
         public blocks: objects.Block[][];
+        public powerups: objects.Powerup[];
         public tank1: objects.Tank;
         public tank2: objects.Tank;
         public turret1: objects.Turret;
@@ -144,6 +145,8 @@ module objects {
                 }
             }
 
+            this.powerups = new Array<objects.Powerup>();
+
             this.tank1.SetEnemy(this.tank2);
             this.tank2.SetEnemy(this.tank1);
 
@@ -159,7 +162,20 @@ module objects {
         }
 
         public Update(): void {
-
+            this.tank1.Update();
+            this.tank2.Update();
+            this.powerups.forEach(powerup => {
+                if (util.Vector2.ManhatDistance(powerup.Position, this.tank1.Position) < (this.tank1.Height * 5)) {
+                    if (managers.Collision.isCollidingWithCircle(this.tank1, powerup)) {
+                        powerup.applyPowerup(this.tank1);
+                    }
+                }
+                if (util.Vector2.ManhatDistance(powerup.Position, this.tank2.Position) < (this.tank2.Height * 5)) {
+                    if (managers.Collision.isCollidingWithCircle(this.tank2, powerup)) {
+                        powerup.applyPowerup(this.tank2);
+                    }
+                }
+            });
         }
 
         public Destroy(): void {

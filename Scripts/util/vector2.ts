@@ -58,6 +58,16 @@ module util {
             return result;
         }
 
+        public static Multiply(vec1: util.Vector2, scalar: number): util.Vector2 {
+            let result: util.Vector2 = new util.Vector2(vec1.x * scalar, vec1.y * scalar);
+            return result;
+        }
+
+        public static Divide(vec1: util.Vector2, scalar: number): util.Vector2 {
+            let result: util.Vector2 = new util.Vector2(vec1.x / scalar, vec1.y / scalar);
+            return result;
+        }
+
         public static Rotate(vec: util.Vector2, angle: number): util.Vector2 {
             let sin = Math.sin(angle * Math.PI / 180);
             let cos = Math.cos(angle * Math.PI / 180);

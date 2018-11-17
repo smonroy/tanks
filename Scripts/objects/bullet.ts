@@ -2,12 +2,14 @@ module objects {
     export class Bullet extends objects.GameObject {
         private _speed: number;
         private _active: boolean;
+        private _owner: string;
         private _type:number; // type of bullet: 1 = body bullet, 2 = turret bullet
 
         // constructors
-        constructor(x: number, y: number, angle: number, type:number = 1) {
+        constructor(x: number, y: number, angle: number, owner:string, type:number = 1) {
             super("bullet" + type);
 //            this._speed = 6;
+            this._owner = owner;
             this.Activate(x, y, angle, type);
             this.Start();
         }
@@ -33,10 +35,6 @@ module objects {
         public Deactivate() {
             this._active = false;
             this.x = -100;
-        }
-
-        public IsAvailable() {
-            return !this._active;
         }
 
         public Update(): void {
