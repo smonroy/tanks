@@ -15,6 +15,12 @@ var objects;
             this.Start();
         }
         // private methods
+        _AddBlock(block, scale, yi, xi) {
+            block.scaleX = scale;
+            block.scaleY = scale;
+            this.blocks[yi][xi] = block;
+            this._scene.addChild(block);
+        }
         _PrepareGrid() {
             let result = new Array();
             for (let indexY = 0; indexY <= config.GRID[this._level].length + 1; indexY++) {
@@ -79,33 +85,32 @@ var objects;
                     let x = this._hOffset + (xi * this._blockSize);
                     let y = this._vOffset + (yi * this._blockSize);
                     switch (gridElemnt) {
-                        case config.BlockType.__: {
+                        case config.BlockType.__:
                             break;
-                        }
-                        case config.BlockType.T1: {
+                        case config.BlockType.T1:
                             this.turret1 = new objects.Turret(1, x, y, SCALE * this._tankScale);
                             this.tank1 = new objects.Tank(1, x, y, SCALE * this._tankScale, this.turret1);
                             this.grid[yi][xi] = config.BlockType.__;
                             break;
-                        }
-                        case config.BlockType.T2: {
+                        case config.BlockType.T2:
                             this.turret2 = new objects.Turret(2, x, y, SCALE * this._tankScale);
                             this.tank2 = new objects.Tank(2, x, y, SCALE * this._tankScale, this.turret2);
                             this.grid[yi][xi] = config.BlockType.__;
                             break;
-                        }
-                        default: {
-                            let block = new objects.Block(this._level, gridElemnt, x, y);
-                            block.scaleX = SCALE;
-                            block.scaleY = SCALE;
-                            this.blocks[yi][xi] = block;
-                            this._scene.addChild(block);
-                            if (gridElemnt == config.BlockType.B1)
-                                managers.Game.scoreBoard.AddBase1();
-                            if (gridElemnt == config.BlockType.B2)
-                                managers.Game.scoreBoard.AddBase2();
+                        case config.BlockType.B1:
+                            managers.Game.scoreBoard.AddBase1();
+                            let block = new objects.Block(this._level, gridElemnt, x, y, 3);
+                            this._AddBlock(block, SCALE, yi, xi);
                             break;
-                        }
+                        case config.BlockType.B2:
+                            managers.Game.scoreBoard.AddBase2();
+                            let block1 = new objects.Block(this._level, gridElemnt, x, y, 3);
+                            this._AddBlock(block1, SCALE, yi, xi);
+                            break;
+                        default:
+                            let block2 = new objects.Block(this._level, gridElemnt, x, y);
+                            this._AddBlock(block2, SCALE, yi, xi);
+                            break;
                     }
                 }
             }
