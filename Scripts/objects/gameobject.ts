@@ -57,7 +57,7 @@ module objects {
             this.Height = this.getBounds().height;
         }
 
-        public getCorners(xOffset: number = 0, yOffset: number = 0): util.Vector2[] {
+        public getCorners(xOffset: number = 0, yOffset: number = 0, rotationDelta:number = 0): util.Vector2[] {
             let verts: util.Vector2[] = [
                 new util.Vector2(-this.HalfWidth * this.scaleX, -this.HalfHeight * this.scaleY),
                 new util.Vector2(this.HalfWidth * this.scaleX, -this.HalfHeight * this.scaleY),
@@ -66,7 +66,7 @@ module objects {
             ];
 
             for (let i: number = 0; i < verts.length; i++) {
-                verts[i] = util.Vector2.Rotate(verts[i], this.rotation);
+                verts[i] = util.Vector2.Rotate(verts[i], this.rotation + rotationDelta);
                 verts[i].x += this.x + xOffset;
                 verts[i].y += this.y + yOffset;
             }

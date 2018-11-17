@@ -1,14 +1,20 @@
 module managers {
     export class Collision {
-        public static isColliding(go1: objects.GameObject, go2: objects.GameObject): boolean {
-            let axes: util.Vector2[] = [
-                new util.Vector2(Math.cos(go1.rotation), Math.sin(go1.rotation)),
-                new util.Vector2(-Math.sin(go1.rotation), Math.cos(go1.rotation)),
-                new util.Vector2(Math.cos(go2.rotation), Math.sin(go2.rotation)),
-                new util.Vector2(-Math.sin(go2.rotation), Math.cos(go2.rotation))
+        public static isColliding(go1: objects.GameObject, go2: objects.GameObject, go1Offset:util.Vector2 = new util.Vector2(0, 0), rotationDelta:number): boolean {
+
+            let axes:util.Vector2[] = [
+                new util.Vector2(Math.cos(go1.rotation * Math.PI / 180), Math.sin(go1.rotation * Math.PI / 180)),
+                new util.Vector2(-Math.sin(go1.rotation * Math.PI / 180), Math.cos(go1.rotation * Math.PI / 180)),
+                new util.Vector2(Math.cos(go2.rotation * Math.PI / 180), Math.sin(go2.rotation * Math.PI / 180)),
+                new util.Vector2(-Math.sin(go2.rotation * Math.PI / 180), Math.cos(go2.rotation * Math.PI / 180))
             ];
 
-            let verts1: util.Vector2[] = go1.getCorners();
+            if(rotationDelta != 0) {
+                axes[0] = util.Vector2.Rotate(axes[0], rotationDelta);
+                axes[1] = util.Vector2.Rotate(axes[1], rotationDelta);
+            }
+
+            let verts1: util.Vector2[] = go1.getCorners(go1Offset.x, go1Offset.y, rotationDelta);
             //console.log(verts1);
             let verts2: util.Vector2[] = go2.getCorners();
             //console.log(verts2);
@@ -34,16 +40,16 @@ module managers {
                     min2 = Math.min(min2, proj_v2);
                     max2 = Math.max(max2, proj_v2);
                 }
-                //console.log("max1", max1);
-                //console.log("min1", min1);
-                //console.log("max2", max2);
-                //console.log("min2", min2);
+                // console.log("max1", max1);
+                // console.log("min1", min1);
+                // console.log("max2", max2);
+                // console.log("min2", min2);
 
                 // overlap check
                 let r1: number = max1 - min1;
                 let r2: number = max2 - min2;
                 let r: number = Math.max(max1, max2) - Math.min(min1, min2);
-                console.log (r, r1, r2);
+                // console.log (r, r1, r2);
                 if (r1 + r2 < r) {
                     return false;
                 }

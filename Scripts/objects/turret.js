@@ -8,7 +8,7 @@ var objects;
             this.y = y;
             this.scaleX = scale;
             this.scaleY = scale;
-            this._rotationSpeed = 1;
+            this._rotationSpeed = 0.5;
             this._localRotation = 0;
             this.regX = this.HalfWidth;
             this.regY = this.Height * 0.85;

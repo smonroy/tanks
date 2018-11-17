@@ -13,6 +13,7 @@ module objects {
         private _startPoint: util.Vector2;
         private _turret:objects.Turret;
         private _turretOffset:number;   // factor of halfHeight
+        private _enemy:objects.Tank;
 
         constructor(playerNumber: number, x: number, y: number, scale: number, turret:objects.Turret) {
             super("tank" + playerNumber);
@@ -24,8 +25,8 @@ module objects {
             this._turret = turret;
             this._initialize();
             this._playerIndex = playerNumber - 1;
-            this._speed = 2;
-            this._rotationSpeed = 2;
+            this._speed = 0.5;
+            this._rotationSpeed = 0.5;
             this._turretOffset = 0.4;
             this._forward = new util.Vector2(0, -this.HalfHeight * scale);
             this._right = new util.Vector2(this.HalfWidth * scale, 0);
@@ -34,20 +35,29 @@ module objects {
             this.Start();
         }
 
-        private _isPassable(action: config.ActionEnum, xDelta: number = 0, yDelta: number = 0): boolean {
-            //let xScalar = 0;
-            //let yScalar = 1;
+        private _isPassable(action:config.ActionEnum, xDelta:number = 0, yDelta:number = 0, rotation:number = 0): boolean {
             let forward = this._forward;
             let right = this._right;
-
+            let rotationDelta:number;
+            
             if (action == config.ActionEnum.TurnRight) {
                 forward = util.Vector2.Rotate(this._forward, this._rotationSpeed);
                 right = util.Vector2.Rotate(this._right, this._rotationSpeed);
+                rotationDelta = this._rotationSpeed;
             }
             if (action == config.ActionEnum.TurnLeft) {
                 forward = util.Vector2.Rotate(this._forward, -this._rotationSpeed);
                 right = util.Vector2.Rotate(this._right, -this._rotationSpeed);
+                rotationDelta = -this._rotationSpeed;
             }
+
+            // tank collision
+            if (util.Vector2.ManhatDistance(this._enemy.Position, this.Position) < (this.Height * this.scaleY * 50)) {
+                if (managers.Collision.isColliding(this, this._enemy, new util.Vector2(xDelta, yDelta), rotationDelta)) {
+                    return false;
+                }
+            }
+
             for (let i: number = 0; i < config.BUMPERS[action].length; i++) {
                 let bumper: util.Vector2 = config.BUMPERS[action][i];
                 if (managers.Game.map.GetCellContent(this.x + xDelta + (forward.x * bumper.y) + (right.x * bumper.x),
@@ -61,6 +71,10 @@ module objects {
         public Reset(): void {
             this.x = this._startPoint.x;
             this.y = this._startPoint.y;
+        }
+
+        public SetEnemy(enemy:objects.Tank) {
+            this._enemy = enemy;
         }
 
         private _activateBullet(turret:boolean = false, localRotation:number = 0) {
@@ -80,7 +94,6 @@ module objects {
             this._bullets[this._bulletsNum] = newBullet;
             this._bulletsNum++;
             this.parent.addChild(newBullet);
-            console.log("bullets: " + this._bulletsNum);
         }
 
         private _rotate(rotation: number) {
@@ -92,7 +105,6 @@ module objects {
         public Start(): void {
             this.regX = this.HalfWidth;
             this.regY = this.HalfHeight;
-            console.log(this.HalfHeight, this.HalfWidth);
         }
 
         public Update(): void {
