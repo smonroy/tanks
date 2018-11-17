@@ -190,6 +190,7 @@ var objects;
                         this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
                     }
                 }
+
             }
             else {
                 //Reset the player's stun state once the period is done
@@ -208,15 +209,16 @@ var objects;
                                 bullet.Deactivate();
                                 console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
                                 if (bullet.Type === 2) {
+
                                     this._enemy.Stun();
                                 }
                             }
                         }
                     }
-                }
-            });
-            this._turret.Update();
-            this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);
+                });
+                this._turret.Update();
+                this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);
+            }
         }
         Destroy() {
             throw new Error("Method not implemented.");
