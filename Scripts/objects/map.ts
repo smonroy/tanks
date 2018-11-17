@@ -116,16 +116,12 @@ module objects {
                     switch (gridElemnt) {
                         case config.BlockType.__:
                             break;
-                        }
-
-                        case config.BlockType.T1: {
+                        case config.BlockType.T1:
                             this.turret1 = new objects.Turret(1, x, y, SCALE * this._tankScale);
                             this.tank1 = new objects.Tank(1, x, y, SCALE * this._tankScale, this.turret1);
                             this.grid[yi][xi] = config.BlockType.__;
                             break;
-                        }
-                        
-                        case config.BlockType.T2: {
+                        case config.BlockType.T2:
                             this.turret2 = new objects.Turret(2, x, y, SCALE * this._tankScale);
                             this.tank2 = new objects.Tank(2, x, y, SCALE * this._tankScale, this.turret2);
                             this.grid[yi][xi] = config.BlockType.__;
