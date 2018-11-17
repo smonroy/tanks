@@ -25,7 +25,7 @@ var scenes;
             //         this._map.tank2.Reset();
             //     }
             // }
-            this._map.tank1.Bullets.forEach(bullet => {
+            /* this._map.tank1.Bullets.forEach(bullet => {
                 if (!bullet.IsAvailable()) {
                     if (util.Vector2.ManhatDistance(bullet.Position, this._map.tank2.Position) < (this._map.tank2.Height * 7)) {
                         if (managers.Collision.isCollidingWithPoint(this._map.tank2, bullet)) {
@@ -44,7 +44,7 @@ var scenes;
                         }
                     }
                 }
-            });
+            }); */
             if (managers.Game.scoreBoard.isBattleOver()) {
                 if (this._level == 3) {
                     managers.Game.currentState = config.Scene.START;

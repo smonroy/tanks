@@ -1,7 +1,7 @@
 var objects;
 (function (objects) {
     class Tank extends objects.GameObject {
-        constructor(playerNumber, x, y, scale, turret) {
+        constructor(playerNumber, x, y, scale, turret, stunDelay = 179) {
             super("tank" + playerNumber);
             this.x = x;
             this.y = y;
@@ -18,10 +18,11 @@ var objects;
             this._right = new util.Vector2(this.HalfWidth * scale, 0);
             this._bullets = new Array();
             this._bulletsNum = 0;
+            this._stunDelay = stunDelay;
             this.Start();
         }
-        get Bullets() {
-            return this._bullets;
+        get IsStunned() {
+            return this._stunned;
         }
         _isPassable(action, xDelta = 0, yDelta = 0, rotation = 0) {
             let forward = this._forward;
@@ -58,6 +59,12 @@ var objects;
         SetEnemy(enemy) {
             this._enemy = enemy;
         }
+        Stun() {
+            this._stunned = true;
+            this._turret.alpha = 0.5;
+            this.alpha = 0.5;
+            this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
+        }
         _activateBullet(turret = false, localRotation = 0) {
             let spawnPoint = util.Vector2.Rotate(this._forward, localRotation);
             if (turret) {
@@ -66,12 +73,12 @@ var objects;
             }
             spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));
             for (let i = 0; i < this._bullets.length; i++) {
-                if (this._bullets[i].IsAvailable()) {
+                if (this._bullets[i].IsAvailable) {
                     this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
                     return;
                 }
             }
-            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation);
+            let newBullet = new objects.Bullet(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, "P" + (this._playerIndex + 1));
             this._bullets[this._bulletsNum] = newBullet;
             this._bulletsNum++;
             this.parent.addChild(newBullet);
@@ -88,84 +95,103 @@ var objects;
         Update() {
             let xd = this._speed * Math.sin(this.rotation * Math.PI / 180);
             let yd = this._speed * Math.cos(this.rotation * Math.PI / 180);
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Forward])) {
-                if (this._isPassable(config.ActionEnum.Forward, xd, -yd)) {
-                    this.x += xd;
-                    this.y -= yd;
+            if (!this._stunned) {
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Forward])) {
+                    if (this._isPassable(config.ActionEnum.Forward, xd, -yd)) {
+                        this.x += xd;
+                        this.y -= yd;
+                    }
+                    else {
+                        if (this._isPassable(config.ActionEnum.TurnRight, xd / 2, -yd / 2)) {
+                            this._rotate(this._rotationSpeed);
+                        }
+                        else if (this._isPassable(config.ActionEnum.TurnLeft, xd / 2, -yd / 2)) {
+                            this._rotate(-this._rotationSpeed);
+                        }
+                    }
                 }
-                else {
-                    if (this._isPassable(config.ActionEnum.TurnRight, xd / 2, -yd / 2)) {
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Backward])) {
+                    if (this._isPassable(config.ActionEnum.Backward, -xd, yd)) {
+                        this.x -= xd;
+                        this.y += yd;
+                    }
+                    else {
+                        if (this._isPassable(config.ActionEnum.TurnRight, -xd / 2, yd / 2)) {
+                            this._rotate(this._rotationSpeed);
+                        }
+                        else if (this._isPassable(config.ActionEnum.TurnLeft, -xd / 2, yd / 2)) {
+                            this._rotate(-this._rotationSpeed);
+                        }
+                    }
+                }
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnRight])) {
+                    if (this._isPassable(config.ActionEnum.TurnRight)) {
                         this._rotate(this._rotationSpeed);
                     }
-                    else if (this._isPassable(config.ActionEnum.TurnLeft, xd / 2, -yd / 2)) {
+                    else {
+                        if (this._isPassable(config.ActionEnum.TurnRight, xd / 2, -yd / 2)) {
+                            this.x += xd / 2;
+                            this.y -= yd / 2;
+                        }
+                        else if (this._isPassable(config.ActionEnum.TurnRight, -xd / 2, yd / 2)) {
+                            this.x -= xd / 2;
+                            this.y += yd / 2;
+                        }
+                    }
+                }
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnLeft])) {
+                    if (this._isPassable(config.ActionEnum.TurnLeft)) {
                         this._rotate(-this._rotationSpeed);
                     }
+                    else {
+                        if (this._isPassable(config.ActionEnum.TurnLeft, xd / 2, -yd / 2)) {
+                            this.x += xd / 2;
+                            this.y -= yd / 2;
+                        }
+                        else if (this._isPassable(config.ActionEnum.TurnLeft, -xd / 2, yd / 2)) {
+                            this.x -= xd / 2;
+                            this.y += yd / 2;
+                        }
+                    }
                 }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Backward])) {
-                if (this._isPassable(config.ActionEnum.Backward, -xd, yd)) {
-                    this.x -= xd;
-                    this.y += yd;
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Shoot1])) {
+                    if (!this._shoot1) {
+                        this._activateBullet();
+                        this._shoot1 = true;
+                    }
                 }
                 else {
-                    if (this._isPassable(config.ActionEnum.TurnRight, -xd / 2, yd / 2)) {
-                        this._rotate(this._rotationSpeed);
-                    }
-                    else if (this._isPassable(config.ActionEnum.TurnLeft, -xd / 2, yd / 2)) {
-                        this._rotate(-this._rotationSpeed);
-                    }
+                    this._shoot1 = false;
                 }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnRight])) {
-                if (this._isPassable(config.ActionEnum.TurnRight)) {
-                    this._rotate(this._rotationSpeed);
+                if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
+                    if (!this._shoot2) {
+                        this._activateBullet(true, this._turret.GetTurretRotation());
+                        this._shoot2 = true;
+                    }
                 }
                 else {
-                    if (this._isPassable(config.ActionEnum.TurnRight, xd / 2, -yd / 2)) {
-                        this.x += xd / 2;
-                        this.y -= yd / 2;
-                    }
-                    else if (this._isPassable(config.ActionEnum.TurnRight, -xd / 2, yd / 2)) {
-                        this.x -= xd / 2;
-                        this.y += yd / 2;
-                    }
-                }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurnLeft])) {
-                if (this._isPassable(config.ActionEnum.TurnLeft)) {
-                    this._rotate(-this._rotationSpeed);
-                }
-                else {
-                    if (this._isPassable(config.ActionEnum.TurnLeft, xd / 2, -yd / 2)) {
-                        this.x += xd / 2;
-                        this.y -= yd / 2;
-                    }
-                    else if (this._isPassable(config.ActionEnum.TurnLeft, -xd / 2, yd / 2)) {
-                        this.x -= xd / 2;
-                        this.y += yd / 2;
-                    }
-                }
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.Shoot1])) {
-                if (!this._shoot1) {
-                    this._activateBullet();
-                    this._shoot1 = true;
+                    this._shoot2 = false;
                 }
             }
             else {
-                this._shoot1 = false;
-            }
-            if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
-                if (!this._shoot2) {
-                    this._activateBullet(true, this._turret.GetTurretRotation());
-                    this._shoot2 = true;
+                //Reset the player's stun state once the period is done
+                if (createjs.Ticker.getTicks() > this._stunFrame) {
+                    this._turret.alpha = 1;
+                    this.alpha = 1;
+                    this._stunned = false;
                 }
-            }
-            else {
-                this._shoot2 = false;
             }
             this._bullets.forEach(bullet => {
-                bullet.Update();
+                if (!this._enemy.IsStunned && !bullet.IsAvailable) {
+                    bullet.Update();
+                    if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 75)) {
+                        if (managers.Collision.isCollidingWithPoint(this._enemy, bullet)) {
+                            bullet.Deactivate();
+                            console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
+                            this._enemy.Stun();
+                        }
+                    }
+                }
             });
             this._turret.Update();
             this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);

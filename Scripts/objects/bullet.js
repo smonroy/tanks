@@ -2,11 +2,15 @@ var objects;
 (function (objects) {
     class Bullet extends objects.GameObject {
         // constructors
-        constructor(x, y, angle) {
+        constructor(x, y, angle, owner) {
             super("bullet");
             this._speed = 6;
+            this._owner = owner;
             this.Activate(x, y, angle);
             this.Start();
+        }
+        get IsAvailable() {
+            return !this._active;
         }
         // private methods
         // public methods
@@ -23,9 +27,6 @@ var objects;
         Deactivate() {
             this._active = false;
             this.x = -100;
-        }
-        IsAvailable() {
-            return !this._active;
         }
         Update() {
             if (this._active) {

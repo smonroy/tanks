@@ -53,8 +53,8 @@ var managers;
         }
         static isCollidingWithPoint(go1, go2) {
             let axes = [
-                new util.Vector2(Math.cos(go1.rotation), Math.sin(go1.rotation)),
-                new util.Vector2(-Math.sin(go1.rotation), Math.cos(go1.rotation))
+                new util.Vector2(Math.cos(go1.rotation * Math.PI / 180), Math.sin(go1.rotation * Math.PI / 180)),
+                new util.Vector2(-Math.sin(go1.rotation * Math.PI / 180), Math.cos(go1.rotation * Math.PI / 180))
             ];
             let verts1 = go1.getCorners();
             // project vertices to each axis
@@ -68,12 +68,11 @@ var managers;
                     min1 = Math.min(min1, proj_v1);
                     max1 = Math.max(max1, proj_v1);
                 }
-                // find max and min from verts2
+                // project point to each axis
                 let proj_v2 = util.Vector2.Dot(new util.Vector2(go2.x, go2.y), axes[i]);
                 // overlap check
                 let r1 = max1 - min1;
                 let r = Math.max(max1, proj_v2) - Math.min(min1, proj_v2);
-                //console.log (r, r1, r2);
                 if (r1 < r) {
                     return false;
                 }
