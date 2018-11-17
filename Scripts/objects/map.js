@@ -108,7 +108,7 @@ var objects;
                             this._AddBlock(block1, SCALE, yi, xi);
                             break;
                         default:
-                            let block2 = new objects.Block(this._level, gridElemnt, x, y);
+                            let block2 = new objects.Block(this._level, gridElemnt, x, y, 2);
                             this._AddBlock(block2, SCALE, yi, xi);
                             break;
                     }

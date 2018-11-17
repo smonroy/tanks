@@ -5,6 +5,14 @@ module objects {
         private _owner: string;
         private _type:number; // type of bullet: 1 = body bullet, 2 = turret bullet
 
+        get IsAvailable(): boolean {
+            return !this._active;
+        }
+
+        get Type(): number {
+            return this._type;
+        }
+
         // constructors
         constructor(x: number, y: number, angle: number, owner:string, type:number = 1) {
             super("bullet" + type);
@@ -53,7 +61,7 @@ module objects {
                         this.Deactivate();
                         break;
                     default:
-                        managers.Game.map.GetBlock(this.x, this.y).Health--;
+                        managers.Game.map.GetBlock(this.x, this.y).Health -= this._type;
                         this.Deactivate();
                         break;
                 }

@@ -1,25 +1,25 @@
 module objects {
-    
+
     export class Tank extends GameObject {
 
-        private _speed:number;
+        private _speed: number;
         private _origSpeed: number;
         private _rotationSpeed: number;
         private _origRotationSpeed: number;
-        private _playerIndex:number;
-        private _forward:util.Vector2;
-        private _right:util.Vector2;
-        private _bullets:objects.Bullet[];
-        private _shootDelay:number[] = [0, 0, 0];
-        private _bulletsNum:number;
-        private _startPoint:util.Vector2;
-        private _turret:objects.Turret;
-        private _turretOffset:number;   // factor of halfHeight
-        private _enemy:objects.Tank;
+        private _playerIndex: number;
+        private _forward: util.Vector2;
+        private _right: util.Vector2;
+        private _bullets: objects.Bullet[];
+        private _shootDelay: number[] = [0, 0, 0];
+        private _bulletsNum: number;
+        private _startPoint: util.Vector2;
+        private _turret: objects.Turret;
+        private _turretOffset: number;   // factor of halfHeight
+        private _enemy: objects.Tank;
         private _stunned: boolean;
         private _stunFrame: number;
         private _stunDelay: number;
-  
+
         get IsStunned(): boolean {
             return this._stunned;
         }
@@ -96,7 +96,7 @@ module objects {
                 this._rotationSpeed += this._origRotationSpeed;
             }
         }
-      
+
         public Stun() {
             this._stunned = true;
             this._turret.alpha = 0.5;
@@ -108,9 +108,9 @@ module objects {
             this._enemy = enemy;
         }
 
-        private _activateBullet(turret:boolean = false, localRotation:number = 0, xOffset:number = 0) {
-            let spawnPoint:util.Vector2 = util.Vector2.Rotate(this._forward, localRotation);
-            if(turret) {
+        private _activateBullet(turret: boolean = false, localRotation: number = 0, xOffset: number = 0) {
+            let spawnPoint: util.Vector2 = util.Vector2.Rotate(this._forward, localRotation);
+            if (turret) {
                 spawnPoint = util.Vector2.Multiply(spawnPoint, 1.2);
                 spawnPoint.x -= (this._forward.x * this._turretOffset);
                 spawnPoint.y -= (this._forward.y * this._turretOffset);
@@ -120,7 +120,7 @@ module objects {
             }
             spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));
             for (let i: number = 0; i < this._bullets.length; i++) {
-                if (this._bullets[i].IsAvailable()) {
+                if (this._bullets[i].IsAvailable) {
                     this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, turret ? 2 : 1);
                     return;
                 }
@@ -216,6 +216,7 @@ module objects {
                     if (this._shootDelay[config.ShootType.turret] < Date.now()) {
                         this._activateBullet(true, this._turret.GetTurretRotation());
                         this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
+                    }
                 }
             }
             else {
@@ -231,11 +232,13 @@ module objects {
                 if (!bullet.IsAvailable) {
                     bullet.Update();
                     if (!this._enemy.IsStunned) {
-                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 18)) {
+                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 25)) {
                             if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
                                 bullet.Deactivate();
                                 console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
-                                this._enemy.Stun();
+                                if (bullet.Type === 2) {
+                                    this._enemy.Stun();
+                                }
                             }
                         }
                     }

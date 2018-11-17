@@ -2,14 +2,18 @@ var objects;
 (function (objects) {
     class Bullet extends objects.GameObject {
         // constructors
-        constructor(x, y, angle, type = 1) {
+        constructor(x, y, angle, owner, type = 1) {
             super("bullet" + type);
             //            this._speed = 6;
+            this._owner = owner;
             this.Activate(x, y, angle, type);
             this.Start();
         }
         get IsAvailable() {
             return !this._active;
+        }
+        get Type() {
+            return this._type;
         }
         // private methods
         // public methods
@@ -46,7 +50,7 @@ var objects;
                         this.Deactivate();
                         break;
                     default:
-                        managers.Game.map.GetBlock(this.x, this.y).Health--;
+                        managers.Game.map.GetBlock(this.x, this.y).Health -= this._type;
                         this.Deactivate();
                         break;
                 }
