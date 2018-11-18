@@ -113,16 +113,16 @@ var objects;
                             break;
                         case config.BlockType.B1:
                             managers.Game.scoreBoard.AddBase1();
-                            let block = new objects.Block(this._level, gridElemnt, x, y, 3);
+                            let block = new objects.Block(this._level, gridElemnt, x, y, 10);
                             this._AddBlock(block, SCALE, yi, xi);
                             break;
                         case config.BlockType.B2:
                             managers.Game.scoreBoard.AddBase2();
-                            let block1 = new objects.Block(this._level, gridElemnt, x, y, 3);
+                            let block1 = new objects.Block(this._level, gridElemnt, x, y, 10);
                             this._AddBlock(block1, SCALE, yi, xi);
                             break;
                         default:
-                            let block2 = new objects.Block(this._level, gridElemnt, x, y, 2);
+                            let block2 = new objects.Block(this._level, gridElemnt, x, y, 5);
                             this._AddBlock(block2, SCALE, yi, xi);
                             break;
                     }

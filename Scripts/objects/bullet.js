@@ -8,9 +8,6 @@ var objects;
             this.Activate(x, y, angle, type);
             this.Start();
         }
-        get IsAvailable() {
-            return !this._active;
-        }
         get Type() {
             return this._type;
         }
@@ -55,7 +52,7 @@ var objects;
                         this.Deactivate();
                         break;
                     default:
-                        managers.Game.map.GetBlock(this.x, this.y).Health -= this._type;
+                        managers.Game.map.GetBlock(this.x, this.y).Health -= this._type == 1 ? 1 : 5;
                         this.Deactivate();
                         break;
                 }

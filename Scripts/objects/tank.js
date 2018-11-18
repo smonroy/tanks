@@ -78,7 +78,6 @@ var objects;
                 this._stunned = true;
                 this._turret.alpha = 0.5;
                 this.alpha = 0.5;
-                //                this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
                 this._stunFrame = Date.now() + this._stunDelay;
             }
         }
@@ -98,7 +97,7 @@ var objects;
             }
             spawnPoint = util.Vector2.Add(spawnPoint, new util.Vector2(this.x, this.y));
             for (let i = 0; i < this._bullets.length; i++) {
-                if (this._bullets[i].IsAvailable) {
+                if (this._bullets[i].IsAvailable()) {
                     this._bullets[i].Activate(spawnPoint.x, spawnPoint.y, this.rotation + localRotation, turret ? 2 : 1);
                     return;
                 }
@@ -200,8 +199,6 @@ var objects;
                 this._turret.Update();
             }
             else {
-                //Reset the player's stun state once the period is done
-                // if (createjs.Ticker.getTicks() > this._stunFrame) {
                 if (Date.now() > this._stunFrame) {
                     this._turret.alpha = 1;
                     this.alpha = 1;
@@ -211,15 +208,14 @@ var objects;
             this._bullets.forEach(bullet => {
                 if (!bullet.IsAvailable()) {
                     bullet.Update();
-                    if (!this._enemy.IsStunned) {
-                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 25)) {
-                            if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
-                                bullet.Deactivate();
-                                console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
+                    if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 25)) {
+                        if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
+                            if (!this._enemy.IsStunned) {
                                 if (bullet.GetType() == 2) {
                                     this._enemy.Stun();
                                 }
                             }
+                            bullet.Deactivate();
                         }
                     }
                 }
