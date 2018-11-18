@@ -16,9 +16,10 @@ module objects {
         private _turret:objects.Turret;
         private _turretOffset:number;   // factor of halfHeight
         private _enemy:objects.Tank;
-        private _stunned: boolean;
-        private _stunFrame: number;
-        private _stunDelay: number;
+        private _stunned:boolean;
+        private _stunFrame:number;
+        private _stunDelay:number;
+        private _fireDelayFactor:number; 
   
         get IsStunned(): boolean {
             return this._stunned;
@@ -28,15 +29,16 @@ module objects {
             return this._bullets;
         }
 
-        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 179) {
+        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 5000) {
             super("tank" + playerNumber);
+            this._fireDelayFactor = 1;
             this.x = x;
             this.y = y;
             this._startPoint = new util.Vector2(this.x, this.y);
             this.scaleX = scale;
             this.scaleY = scale;
             this._turret = turret;
-            this._initialize();
+//            this._initialize();
             this._playerIndex = playerNumber - 1;
             this._speed = 0.5;
             this._origSpeed = 0.5;
@@ -92,16 +94,23 @@ module objects {
 
         public SpeedUp() {
             if (this._speed < this._origSpeed * 4) {
-                this._speed += this._origSpeed;
+                this._speed += this._origSpeed / 2;
                 this._rotationSpeed += this._origRotationSpeed;
             }
         }
+
+        public FireUp() {
+            this._fireDelayFactor *= 0.75;
+        }
       
         public Stun() {
-            this._stunned = true;
-            this._turret.alpha = 0.5;
-            this.alpha = 0.5;
-            this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
+            if (!this._stunned) {
+                this._stunned = true;
+                this._turret.alpha = 0.5;
+                this.alpha = 0.5;
+//                this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
+                this._stunFrame = Date.now() + this._stunDelay;
+            }
         }
 
         public SetEnemy(enemy: objects.Tank) {
@@ -201,26 +210,30 @@ module objects {
                 if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootLeft])) {
                     if (this._shootDelay[config.ShootType.left] < Date.now()) {
                         this._activateBullet(false, 0, -0.7);
-                        this._shootDelay[config.ShootType.left] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.left];
+                        this._shootDelay[config.ShootType.left] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.left] * this._fireDelayFactor);
                     }
                 }
 
                 if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootRight])) {
                     if (this._shootDelay[config.ShootType.right] < Date.now()) {
                         this._activateBullet(false, 0, 0.7);
-                        this._shootDelay[config.ShootType.right] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.right];
+                        this._shootDelay[config.ShootType.right] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.right] * this._fireDelayFactor);
                     }
                 }
 
                 if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
                     if (this._shootDelay[config.ShootType.turret] < Date.now()) {
                         this._activateBullet(true, this._turret.GetTurretRotation());
-                        this._shootDelay[config.ShootType.turret] = Date.now() + config.SHOOT_DELAY_TIME[config.ShootType.turret];
+                        this._shootDelay[config.ShootType.turret] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.turret] * this._fireDelayFactor);
+                    }
                 }
+
+                this._turret.Update();
             }
             else {
                 //Reset the player's stun state once the period is done
-                if (createjs.Ticker.getTicks() > this._stunFrame) {
+                // if (createjs.Ticker.getTicks() > this._stunFrame) {
+                if (Date.now() > this._stunFrame) {
                     this._turret.alpha = 1;
                     this.alpha = 1;
                     this._stunned = false;
@@ -228,24 +241,27 @@ module objects {
             }
 
             this._bullets.forEach(bullet => {
-                if (!bullet.IsAvailable) {
+                if (!bullet.IsAvailable()) {
                     bullet.Update();
                     if (!this._enemy.IsStunned) {
                         if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 18)) {
                             if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
                                 bullet.Deactivate();
                                 console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
-                                this._enemy.Stun();
+                                if(bullet.GetType() == 2) {
+                                    this._enemy.Stun();
+                                }
                             }
                         }
                     }
                 }
             });
-            this._turret.Update();
+            
             this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);
         }
+
         public Destroy(): void {
-            throw new Error("Method not implemented.");
+            
         }
 
     }

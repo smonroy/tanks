@@ -94,14 +94,14 @@ module config {
             ["block_b2"], // B2
             ["block_in"], // IN
             ["block_d1"], // D1
-            ["block_d2_2"], // D2
+            ["block_d2"], // D2
         ],
         [   // level 3
             ["block_b1"], // B1
             ["block_b2"], // B2
             ["block_in"], // IN
             ["block_d1"], // D1
-            ["block_d2", "block_d2_2"], // D2
+            ["block_d2"], // D2
         ]
     ];
 

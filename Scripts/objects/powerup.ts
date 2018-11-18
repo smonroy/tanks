@@ -29,7 +29,7 @@ module objects {
                     this.Destroy();
                     break;
                 case config.PowerupType.FireRateUp:
-                    //TODO: add method for increasing fire rate of tank
+                    tank.FireUp();
                     this.Destroy();
                     break;
             }

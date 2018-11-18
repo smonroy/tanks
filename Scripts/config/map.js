@@ -93,14 +93,14 @@ var config;
             ["block_b2"],
             ["block_in"],
             ["block_d1"],
-            ["block_d2_2"],
+            ["block_d2"],
         ],
         [
             ["block_b1"],
             ["block_b2"],
             ["block_in"],
             ["block_d1"],
-            ["block_d2", "block_d2_2"],
+            ["block_d2"],
         ]
     ];
     config.MAP_BACKGROUND = [

@@ -8,7 +8,6 @@ module objects {
         // constructors
         constructor(x: number, y: number, angle: number, owner:string, type:number = 1) {
             super("bullet" + type);
-//            this._speed = 6;
             this._owner = owner;
             this.Activate(x, y, angle, type);
             this.Start();
@@ -17,6 +16,14 @@ module objects {
         // private methods
 
         // public methods
+
+        public IsAvailable() {
+            return !this._active;
+        }
+
+        public GetType() {
+            return this._type;
+        }
         public Start(): void {
             this.regX = this.HalfWidth;
             this.regY = this.HalfHeight;
@@ -25,9 +32,9 @@ module objects {
         public Activate(x: number, y: number, angle: number, type:number = 1): void {
             this._active = true;
             this._type = type;
-            this._speed = type == 1 ? 7: 4;
+            this._speed = this._type == 1 ? 7: 4;
             this.rotation = angle;
-            this.image = managers.Game.assetMnager.getResult("bullet" + type) as HTMLImageElement;
+            this.image = managers.Game.assetMnager.getResult("bullet" + this._type) as HTMLImageElement;
             this.x = x;
             this.y = y;
         }
