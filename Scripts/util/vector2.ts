@@ -53,11 +53,6 @@ module util {
             return result;
         }
 
-        public static Multiply(vec1: util.Vector2, scalar: number): util.Vector2 {
-            let result: util.Vector2 = new util.Vector2(vec1.x * scalar, vec1.y * scalar);
-            return result;
-        }
-
         public static Divide(vec1: util.Vector2, scalar: number): util.Vector2 {
             let result: util.Vector2 = new util.Vector2(vec1.x / scalar, vec1.y / scalar);
             return result;

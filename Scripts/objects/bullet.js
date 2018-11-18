@@ -4,7 +4,6 @@ var objects;
         // constructors
         constructor(x, y, angle, owner, type = 1) {
             super("bullet" + type);
-            //            this._speed = 6;
             this._owner = owner;
             this.Activate(x, y, angle, type);
             this.Start();
@@ -18,6 +17,12 @@ var objects;
 
         // private methods
         // public methods
+        IsAvailable() {
+            return !this._active;
+        }
+        GetType() {
+            return this._type;
+        }
         Start() {
             this.regX = this.HalfWidth;
             this.regY = this.HalfHeight;
@@ -25,9 +30,9 @@ var objects;
         Activate(x, y, angle, type = 1) {
             this._active = true;
             this._type = type;
-            this._speed = type == 1 ? 7 : 4;
+            this._speed = this._type == 1 ? 7 : 4;
             this.rotation = angle;
-            this.image = managers.Game.assetMnager.getResult("bullet" + type);
+            this.image = managers.Game.assetMnager.getResult("bullet" + this._type);
             this.x = x;
             this.y = y;
         }

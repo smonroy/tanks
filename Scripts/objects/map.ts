@@ -62,6 +62,20 @@ module objects {
             return result;
         }
 
+        private _AddRamdomBlocks(quantity:number, margin:number = 5) {
+            let columnFrom:number = margin;
+            let columnTo:number = this.grid[0].length - margin;
+            let blockCount:number = 0;
+            while (blockCount < quantity) {
+                let col = Math.floor((Math.random() * (columnTo - columnFrom)) + columnFrom);
+                let row = Math.floor(Math.random() * this.grid.length);
+                if(this.grid[row][col] == config.BlockType.__) {
+                    this.grid[row][col] = config.BlockType.D1;
+                    blockCount++;
+                }
+            }
+        }
+
         private _GetGridColumn(x: number): number {
             return Math.floor((x - this._hOffset + (this._blockSize / 2)) / this._blockSize);
         }
@@ -96,6 +110,7 @@ module objects {
 
         public Reset(): void {
             this.grid = this._PrepareGrid();
+            this._AddRamdomBlocks(50 * (this._level + 1));
 
             const SCALE = Math.min(
                 config.SCREEN_WITH / (this.grid[0].length) / config.BLOCK_SIZE,

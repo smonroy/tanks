@@ -28,7 +28,7 @@ var objects;
                         managers.Game.scoreBoard.SubstractBase2();
                         break;
                     default:
-                        let randPowerup = Math.floor(Math.random() * 10);
+                        let randPowerup = Math.floor(Math.random() * 16);
                         if (randPowerup === 1) {
                             let powerup = new objects.Powerup(config.PowerupType.SpeedUp, this.x, this.y);
                             managers.Game.map.powerups.push(powerup);

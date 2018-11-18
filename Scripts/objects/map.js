@@ -43,6 +43,19 @@ var objects;
             }
             return result;
         }
+        _AddRamdomBlocks(quantity, margin = 5) {
+            let columnFrom = margin;
+            let columnTo = this.grid[0].length - margin;
+            let blockCount = 0;
+            while (blockCount < quantity) {
+                let col = Math.floor((Math.random() * (columnTo - columnFrom)) + columnFrom);
+                let row = Math.floor(Math.random() * this.grid.length);
+                if (this.grid[row][col] == config.BlockType.__) {
+                    this.grid[row][col] = config.BlockType.D1;
+                    blockCount++;
+                }
+            }
+        }
         _GetGridColumn(x) {
             return Math.floor((x - this._hOffset + (this._blockSize / 2)) / this._blockSize);
         }
@@ -72,6 +85,7 @@ var objects;
         }
         Reset() {
             this.grid = this._PrepareGrid();
+            this._AddRamdomBlocks(50 * (this._level + 1));
             const SCALE = Math.min(config.SCREEN_WITH / (this.grid[0].length) / config.BLOCK_SIZE, config.SCREEN_HEIGHT / (this.grid.length) / config.BLOCK_SIZE);
             this._blockSize = config.BLOCK_SIZE * SCALE;
             this._hOffset = ((config.SCREEN_WITH - (this._blockSize * this.grid[0].length)) / 2) + (this._blockSize / 2);
