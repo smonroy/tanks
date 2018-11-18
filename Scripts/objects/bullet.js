@@ -14,7 +14,6 @@ var objects;
         get Type() {
             return this._type;
         }
-
         // private methods
         // public methods
         IsAvailable() {

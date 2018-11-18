@@ -197,7 +197,6 @@ var objects;
                         this._shootDelay[config.ShootType.turret] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.turret] * this._fireDelayFactor);
                     }
                 }
-
                 this._turret.Update();
             }
             else {
@@ -210,11 +209,10 @@ var objects;
                 }
             }
             this._bullets.forEach(bullet => {
-
                 if (!bullet.IsAvailable()) {
                     bullet.Update();
                     if (!this._enemy.IsStunned) {
-                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 18)) {
+                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 25)) {
                             if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
                                 bullet.Deactivate();
                                 console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
