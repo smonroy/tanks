@@ -12,7 +12,7 @@ var scenes;
             this._gameOver.shadow = new createjs.Shadow("black", 5, 5, 5);
             let result;
             let color;
-            if (managers.Game.scoreBoard._P1Victories >= 3) {
+            if (managers.Game.scoreBoard._P2Victories >= 3) {
                 result = "Orange";
                 color = "#DB961E";
             }
