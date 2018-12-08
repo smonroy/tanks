@@ -23,7 +23,7 @@ module objects {
         // private methods
         // public methods
         public applyPowerup(tank: objects.Tank) {
-            switch(this.powerupType) {
+            switch (this.powerupType) {
                 case config.PowerupType.SpeedUp:
                     tank.SpeedUp();
                     this.Destroy();
@@ -43,6 +43,7 @@ module objects {
         public Update(): void {
         }
         public Destroy(): void {
+            createjs.Sound.play("powerupSound", { volume: 0.05 });
             this.powerupType = config.PowerupType.NoPowerup;
             this.parent.removeChild(this);
         }
