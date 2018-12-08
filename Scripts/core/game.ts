@@ -11,6 +11,9 @@
 
     let assetManifest = [
         {id:"startButton", src:"./Assets/Images/startButton.png"},
+        {id:"howToButton", src:"./Assets/Images/howToButton.png"},
+        {id:"menuButton", src:"./Assets/Images/menuButton.png"},
+        {id:"nextButton", src:"./Assets/Images/nextButton.png"},
         {id:"bulletShot", src:"./Assets/audio/gun-shot.wav"},
         {id:"turretShot", src:"./Assets/audio/cannon-shot.ogg"},
         {id:"boxHit", src:"./Assets/audio/destruction-wooden_v2.wav"},
@@ -91,6 +94,9 @@
         switch(currentState) {
             case config.Scene.START:
             currentScene = new scenes.Start();
+            break;
+            case config.Scene.INSTRUCTIONS:
+            currentScene = new scenes.Instructions();
             break;
             case config.Scene.PLAY:
             currentScene = new scenes.Play();
