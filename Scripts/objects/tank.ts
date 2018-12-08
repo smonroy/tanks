@@ -43,7 +43,7 @@ module objects {
             }
         }
 
-        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 5000) {
+        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 5000, health: number = 3) {
             super("tank" + playerNumber);
             this._origFireDelayFactor = 1;
             this._fireDelayFactor = this._origFireDelayFactor;
@@ -65,6 +65,8 @@ module objects {
             this._bullets = new Array<objects.Bullet>();
             this._bulletsNum = 0;
             this._stunDelay = stunDelay;
+            this._origHealth = health;
+            this._health = this._origHealth;
             this.Start();
         }
 
@@ -102,8 +104,7 @@ module objects {
             return true;
         }
 
-        public Reset(health: number = 3): void {
-            this._origHealth = health;
+        public Reset(): void {
             this._health = this._origHealth;
             this.x = this._startPoint.x;
             this.y = this._startPoint.y;
@@ -125,6 +126,8 @@ module objects {
 
         public Stun() {
             this.Health--;
+            createjs.Sound.play("explodeSound", { volume: 0.05 });
+            console.log("Health remaining: " + this._health);
             if (!this._stunned) {
                 this._stunned = true;
                 this._turret.alpha = 0.5;
@@ -231,6 +234,7 @@ module objects {
                     if (this._shootDelay[config.ShootType.left] < Date.now()) {
                         this._activateBullet(false, 0, -0.7);
                         this._shootDelay[config.ShootType.left] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.left] * this._fireDelayFactor);
+                        createjs.Sound.play("bulletShot", { volume: 0.01 });
                     }
                 }
 
@@ -238,13 +242,14 @@ module objects {
                     if (this._shootDelay[config.ShootType.right] < Date.now()) {
                         this._activateBullet(false, 0, 0.7);
                         this._shootDelay[config.ShootType.right] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.right] * this._fireDelayFactor);
+                        createjs.Sound.play("bulletShot", { volume: 0.01 });
                     }
                 }
 
                 if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
                     if (this._shootDelay[config.ShootType.turret] < Date.now()) {
                         this._activateBullet(true, this._turret.GetTurretRotation());
-
+                        createjs.Sound.play("turretShot", { volume: 0.05 });
                         this._shootDelay[config.ShootType.turret] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.turret] * this._fireDelayFactor);
                     }
                 }

@@ -9,9 +9,11 @@
     let scoreBoard;
     let assetManifest = [
         { id: "startButton", src: "./Assets/Images/startButton.png" },
-        { id: "engineSound", src: "./Assets/audio/engine.ogg" },
-        { id: "thunderSound", src: "./Assets/audio/thunder.ogg" },
-        { id: "yaySound", src: "./Assets/audio/yay.ogg" },
+        { id: "bulletShot", src: "./Assets/audio/gun-shot.wav" },
+        { id: "turretShot", src: "./Assets/audio/cannon-shot.ogg" },
+        { id: "boxHit", src: "./Assets/audio/destruction-wooden_v2.wav" },
+        { id: "powerupSound", src: "./Assets/audio/reload.ogg" },
+        { id: "explodeSound", src: "./Assets/audio/explosion.wav" },
         { id: "background1", src: "./Assets/Images/background1.jpg" },
         { id: "background2", src: "./Assets/Images/background2.jpg" },
         { id: "background3", src: "./Assets/Images/background3.jpg" },
