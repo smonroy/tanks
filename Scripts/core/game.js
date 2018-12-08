@@ -59,6 +59,7 @@
     }
     // this is the game loop
     function Update() {
+        managers.Input.ControllerInput();
         currentScene.Update();
         if (currentState != managers.Game.currentState) {
             currentState = managers.Game.currentState;
