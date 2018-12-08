@@ -34,6 +34,7 @@ var objects;
         Update() {
         }
         Destroy() {
+            createjs.Sound.play("powerupSound", { volume: 0.05 });
             this.powerupType = config.PowerupType.NoPowerup;
             this.parent.removeChild(this);
         }

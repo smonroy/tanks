@@ -1,10 +1,11 @@
 var objects;
 (function (objects) {
     class Tank extends objects.GameObject {
-        constructor(playerNumber, x, y, scale, turret, stunDelay = 5000) {
+        constructor(playerNumber, x, y, scale, turret, stunDelay = 5000, health = 3) {
             super("tank" + playerNumber);
             this._shootDelay = [0, 0, 0];
-            this._fireDelayFactor = 1;
+            this._origFireDelayFactor = 1;
+            this._fireDelayFactor = this._origFireDelayFactor;
             this.x = x;
             this.y = y;
             this._startPoint = new util.Vector2(this.x, this.y);
@@ -23,6 +24,8 @@ var objects;
             this._bullets = new Array();
             this._bulletsNum = 0;
             this._stunDelay = stunDelay;
+            this._origHealth = health;
+            this._health = this._origHealth;
             this.Start();
         }
         get IsStunned() {
@@ -30,6 +33,15 @@ var objects;
         }
         get Bullets() {
             return this._bullets;
+        }
+        get Health() {
+            return this._health;
+        }
+        set Health(newHealth) {
+            this._health = newHealth;
+            if (this._health < 1) {
+                this.Reset();
+            }
         }
         _isPassable(action, xDelta = 0, yDelta = 0) {
             let forward = this._forward;
@@ -61,6 +73,7 @@ var objects;
             return true;
         }
         Reset() {
+            this._health = this._origHealth;
             this.x = this._startPoint.x;
             this.y = this._startPoint.y;
         }
@@ -71,9 +84,14 @@ var objects;
             }
         }
         FireUp() {
-            this._fireDelayFactor *= 0.75;
+            if (this._fireDelayFactor > this._origFireDelayFactor / 3) {
+                this._fireDelayFactor *= 0.75;
+            }
         }
         Stun() {
+            this.Health--;
+            createjs.Sound.play("explodeSound", { volume: 0.05 });
+            console.log("Health remaining: " + this._health);
             if (!this._stunned) {
                 this._stunned = true;
                 this._turret.alpha = 0.5;
@@ -182,17 +200,20 @@ var objects;
                     if (this._shootDelay[config.ShootType.left] < Date.now()) {
                         this._activateBullet(false, 0, -0.7);
                         this._shootDelay[config.ShootType.left] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.left] * this._fireDelayFactor);
+                        createjs.Sound.play("bulletShot", { volume: 0.01 });
                     }
                 }
                 if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.ShootRight])) {
                     if (this._shootDelay[config.ShootType.right] < Date.now()) {
                         this._activateBullet(false, 0, 0.7);
                         this._shootDelay[config.ShootType.right] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.right] * this._fireDelayFactor);
+                        createjs.Sound.play("bulletShot", { volume: 0.01 });
                     }
                 }
                 if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
                     if (this._shootDelay[config.ShootType.turret] < Date.now()) {
                         this._activateBullet(true, this._turret.GetTurretRotation());
+                        createjs.Sound.play("turretShot", { volume: 0.05 });
                         this._shootDelay[config.ShootType.turret] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.turret] * this._fireDelayFactor);
                     }
                 }

@@ -23,11 +23,14 @@ var objects;
                 switch (this.blockType) {
                     case config.BlockType.B1:
                         managers.Game.scoreBoard.SubstractBase1();
+                        createjs.Sound.play("explodeSound", { volume: 0.06 });
                         break;
                     case config.BlockType.B2:
                         managers.Game.scoreBoard.SubstractBase2();
+                        createjs.Sound.play("explodeSound", { volume: 0.06 });
                         break;
                     default:
+                        createjs.Sound.play("boxHit", { volume: 0.025 });
                         let randPowerup = Math.floor(Math.random() * 16);
                         if (randPowerup === 1) {
                             let powerup = new objects.Powerup(config.PowerupType.SpeedUp, this.x, this.y);

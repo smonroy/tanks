@@ -8,10 +8,15 @@
     let currentState;
     let scoreBoard;
     let assetManifest = [
-        { id: "startButton", src: "./Assets/Images/startButton.png" },
-        { id: "engineSound", src: "./Assets/audio/engine.ogg" },
-        { id: "thunderSound", src: "./Assets/audio/thunder.ogg" },
-        { id: "yaySound", src: "./Assets/audio/yay.ogg" },
+        { id: "startButton", src: "./Assets/Images/button_play.png" },
+        { id: "howToButton", src: "./Assets/Images/button_instructions.png" },
+        { id: "menuButton", src: "./Assets/Images/button_main-menu.png" },
+        { id: "nextButton", src: "./Assets/Images/nextButton.png" },
+        { id: "bulletShot", src: "./Assets/audio/gun-shot.wav" },
+        { id: "turretShot", src: "./Assets/audio/cannon-shot.ogg" },
+        { id: "boxHit", src: "./Assets/audio/destruction-wooden_v2.wav" },
+        { id: "powerupSound", src: "./Assets/audio/reload.ogg" },
+        { id: "explodeSound", src: "./Assets/audio/explosion.wav" },
         { id: "background1", src: "./Assets/Images/background1.jpg" },
         { id: "background2", src: "./Assets/Images/background2.jpg" },
         { id: "background3", src: "./Assets/Images/background3.jpg" },
@@ -76,8 +81,14 @@
             case config.Scene.START:
                 currentScene = new scenes.Start();
                 break;
+            case config.Scene.INSTRUCTIONS:
+                currentScene = new scenes.Instructions();
+                break;
             case config.Scene.PLAY:
                 currentScene = new scenes.Play();
+                break;
+            case config.Scene.OVER:
+                currentScene = new scenes.Over();
                 break;
         }
         stage.addChild(currentScene);

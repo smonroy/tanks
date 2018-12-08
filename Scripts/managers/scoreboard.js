@@ -31,22 +31,26 @@ var managers;
         }
         set _P1Victories(newValue) {
             this._p1Victories = newValue;
-            this._p1VictoriesLabel.text = "Victories: " + this._p1Victories;
+            this._p1VictoriesLabel.text = "Wins: " + this._p1Victories;
         }
         get _P2Victories() {
             return this._p2Victories;
         }
         set _P2Victories(newValue) {
             this._p2Victories = newValue;
-            this._p2VictoriesLabel.text = "Victories: " + this._p2Victories;
+            this._p2VictoriesLabel.text = "Wins: " + this._p2Victories;
         }
         // private methods
         // public methods
         Start() {
-            this._p1BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 20, 3, false);
-            this._p1VictoriesLabel = new objects.Label("Victories: 9", "30px", "Consolas", "#00FF00", 150, 3, false);
-            this._p2BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 740, 3, false);
-            this._p2VictoriesLabel = new objects.Label("Victories: 9", "30px", "Consolas", "#00FF00", 870, 3, false);
+            this._p1BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 40, 5, false);
+            this._p1BasesLabel.shadow = new createjs.Shadow("black", 3, 3, 1);
+            this._p1VictoriesLabel = new objects.Label("Wins: 9", "30px", "Consolas", "#00FF00", 210, 5, false);
+            this._p1VictoriesLabel.shadow = new createjs.Shadow("black", 3, 3, 1);
+            this._p2BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 700, 5, false);
+            this._p2BasesLabel.shadow = new createjs.Shadow("black", 3, 3, 1);
+            this._p2VictoriesLabel = new objects.Label("Wins: 9", "30px", "Consolas", "#00FF00", 870, 5, false);
+            this._p2VictoriesLabel.shadow = new createjs.Shadow("black", 3, 3, 1);
         }
         AddPlayUI(currentScene) {
             currentScene.addChild(this._p1BasesLabel);
@@ -82,6 +86,9 @@ var managers;
         }
         isBattleOver() {
             return this._P1Bases == 0 || this._P2Bases == 0;
+        }
+        isMatchOver() {
+            return this._P1Victories >= 3 || this._P2Victories >= 3;
         }
     }
     managers.ScoreBoard = ScoreBoard;
