@@ -12,13 +12,26 @@ var objects;
          * @param y
          * @param isCenter
          */
-        constructor(labelString, fontSize, fontFamily, fontColor, x = 0, y = 0, isCenter = false) {
+        constructor(labelString, fontSize, fontFamily, fontColor, x = 0, y = 0, isCenter = false, outline = 0, outlineColor = "black") {
             super(labelString, fontSize + " " + fontFamily, fontColor);
             this.Width = this.getMeasuredWidth();
             this.Height = this.getMeasuredHeight();
             if (isCenter) {
                 this.regX = this.HalfWidth;
                 this.regY = this.HalfHeight;
+            }
+            if (outline > 0) {
+                if (isCenter) {
+                    this._outlineLabel.regX = this.HalfWidth;
+                    this._outlineLabel.regY = this.HalfHeight;
+                }
+                this._outlineLabel = new createjs.Text(labelString, fontSize + " " + fontFamily, outlineColor);
+                this._outlineLabel.outline = outline;
+                this._outlineLabel.lineWidth = this.lineWidth;
+                this._outlineLabel.lineHeight = this.lineHeight;
+                this._outlineLabel.textAlign = this.textAlign;
+                this._outlineLabel.x = x;
+                this._outlineLabel.y = y;
             }
             this.x = x;
             this.y = y;
