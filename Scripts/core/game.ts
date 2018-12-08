@@ -10,9 +10,9 @@
     let scoreBoard:managers.ScoreBoard;
 
     let assetManifest = [
-        {id:"startButton", src:"./Assets/Images/startButton.png"},
-        {id:"howToButton", src:"./Assets/Images/howToButton.png"},
-        {id:"menuButton", src:"./Assets/Images/menuButton.png"},
+        {id:"startButton", src:"./Assets/Images/button_play.png"},
+        {id:"howToButton", src:"./Assets/Images/button_instructions.png"},
+        {id:"menuButton", src:"./Assets/Images/button_main-menu.png"},
         {id:"nextButton", src:"./Assets/Images/nextButton.png"},
         {id:"bulletShot", src:"./Assets/audio/gun-shot.wav"},
         {id:"turretShot", src:"./Assets/audio/cannon-shot.ogg"},
@@ -101,8 +101,10 @@
             case config.Scene.PLAY:
             currentScene = new scenes.Play();
             break;
+            case config.Scene.OVER:
+            currentScene = new scenes.Over();
+            break;
         }
-
         stage.addChild(currentScene);
     }
 

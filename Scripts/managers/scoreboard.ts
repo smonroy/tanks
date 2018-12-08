@@ -68,13 +68,13 @@ module managers {
 
         // public methods
         public Start():void {
-            this._p1BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 20, 5, false);
+            this._p1BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 40, 5, false);
             this._p1BasesLabel.shadow = new createjs.Shadow("black", 3, 3, 1);
-            this._p1VictoriesLabel = new objects.Label("Wins: 9", "30px", "Consolas", "#00FF00", 170, 5, false);
+            this._p1VictoriesLabel = new objects.Label("Wins: 9", "30px", "Consolas", "#00FF00", 210, 5, false);
             this._p1VictoriesLabel.shadow = new createjs.Shadow("black", 3, 3, 1);
-            this._p2BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 740, 5, false);
+            this._p2BasesLabel = new objects.Label("Bases: 9", "30px", "Consolas", "#FFFF00", 700, 5, false);
             this._p2BasesLabel.shadow = new createjs.Shadow("black", 3, 3, 1);
-            this._p2VictoriesLabel = new objects.Label("Wins: 9", "30px", "Consolas", "#00FF00", 890, 5, false);
+            this._p2VictoriesLabel = new objects.Label("Wins: 9", "30px", "Consolas", "#00FF00", 870, 5, false);
             this._p2VictoriesLabel.shadow = new createjs.Shadow("black", 3, 3, 1);
         }
 
@@ -119,6 +119,10 @@ module managers {
 
         public isBattleOver():boolean {
             return this._P1Bases == 0 || this._P2Bases == 0;
+        }
+
+        public isMatchOver():boolean {
+            return this._P1Victories >= 3 || this._P2Victories >= 3;
         }
     }
 }
