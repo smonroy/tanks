@@ -9,6 +9,7 @@ module objects {
         get Health(): number {
             return this._health;
         }
+
         set Health(newHealth: number) {
             this._health = newHealth;
             if (this._health < 1) {
@@ -36,7 +37,7 @@ module objects {
                 managers.Game.map.DestroyBlock(this.x, this.y);
             }
             else {
-                this.alpha = this._health / this._origHealth;
+                this.alpha = (this._health + 3) / (this._origHealth + 3);
             }
         }
 

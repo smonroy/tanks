@@ -1,11 +1,12 @@
 module objects {
-    
+
     export class Tank extends GameObject {
 
-        private _speed:number;
+        private _speed: number;
         private _origSpeed: number;
         private _rotationSpeed: number;
         private _origRotationSpeed: number;
+
         private _playerIndex:number;
         private _forward:util.Vector2;
         private _right:util.Vector2;
@@ -99,6 +100,7 @@ module objects {
             }
         }
 
+
         public FireUp() {
             this._fireDelayFactor *= 0.75;
         }
@@ -108,7 +110,6 @@ module objects {
                 this._stunned = true;
                 this._turret.alpha = 0.5;
                 this.alpha = 0.5;
-//                this._stunFrame = createjs.Ticker.getTicks() + this._stunDelay;
                 this._stunFrame = Date.now() + this._stunDelay;
             }
         }
@@ -117,9 +118,9 @@ module objects {
             this._enemy = enemy;
         }
 
-        private _activateBullet(turret:boolean = false, localRotation:number = 0, xOffset:number = 0) {
-            let spawnPoint:util.Vector2 = util.Vector2.Rotate(this._forward, localRotation);
-            if(turret) {
+        private _activateBullet(turret: boolean = false, localRotation: number = 0, xOffset: number = 0) {
+            let spawnPoint: util.Vector2 = util.Vector2.Rotate(this._forward, localRotation);
+            if (turret) {
                 spawnPoint = util.Vector2.Multiply(spawnPoint, 1.2);
                 spawnPoint.x -= (this._forward.x * this._turretOffset);
                 spawnPoint.y -= (this._forward.y * this._turretOffset);
@@ -224,6 +225,7 @@ module objects {
                 if (managers.Input.isKeydown(config.INPUT_KEY[this._playerIndex][config.ActionEnum.TurretShoot])) {
                     if (this._shootDelay[config.ShootType.turret] < Date.now()) {
                         this._activateBullet(true, this._turret.GetTurretRotation());
+
                         this._shootDelay[config.ShootType.turret] = Date.now() + (config.SHOOT_DELAY_TIME[config.ShootType.turret] * this._fireDelayFactor);
                     }
                 }
@@ -231,8 +233,6 @@ module objects {
                 this._turret.Update();
             }
             else {
-                //Reset the player's stun state once the period is done
-                // if (createjs.Ticker.getTicks() > this._stunFrame) {
                 if (Date.now() > this._stunFrame) {
                     this._turret.alpha = 1;
                     this.alpha = 1;
@@ -243,15 +243,14 @@ module objects {
             this._bullets.forEach(bullet => {
                 if (!bullet.IsAvailable()) {
                     bullet.Update();
-                    if (!this._enemy.IsStunned) {
-                        if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 18)) {
-                            if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
-                                bullet.Deactivate();
-                                console.log("Bullet Hit: P" + (this._enemy._playerIndex + 1));
+                    if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 25)) {
+                        if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
+                            if (!this._enemy.IsStunned) {
                                 if(bullet.GetType() == 2) {
                                     this._enemy.Stun();
                                 }
                             }
+                            bullet.Deactivate();
                         }
                     }
                 }
