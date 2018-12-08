@@ -7,21 +7,24 @@ module objects {
         private _rotationSpeed: number;
         private _origRotationSpeed: number;
 
-        private _playerIndex:number;
-        private _forward:util.Vector2;
-        private _right:util.Vector2;
-        private _bullets:objects.Bullet[];
-        private _shootDelay:number[] = [0, 0, 0];
-        private _bulletsNum:number;
-        private _startPoint:util.Vector2;
-        private _turret:objects.Turret;
-        private _turretOffset:number;   // factor of halfHeight
-        private _enemy:objects.Tank;
-        private _stunned:boolean;
-        private _stunFrame:number;
-        private _stunDelay:number;
-        private _fireDelayFactor:number; 
-  
+        private _playerIndex: number;
+        private _forward: util.Vector2;
+        private _right: util.Vector2;
+        private _bullets: objects.Bullet[];
+        private _shootDelay: number[] = [0, 0, 0];
+        private _bulletsNum: number;
+        private _startPoint: util.Vector2;
+        private _turret: objects.Turret;
+        private _turretOffset: number;   // factor of halfHeight
+        private _enemy: objects.Tank;
+        private _stunned: boolean;
+        private _stunFrame: number;
+        private _stunDelay: number;
+        private _fireDelayFactor: number;
+        private _origFireDelayFactor: number;
+        private _health: number;
+        private _origHealth: number;
+
         get IsStunned(): boolean {
             return this._stunned;
         }
@@ -30,16 +33,27 @@ module objects {
             return this._bullets;
         }
 
+        get Health(): number {
+            return this._health;
+        }
+        set Health(newHealth: number) {
+            this._health = newHealth;
+            if (this._health < 1) {
+                this.Reset();
+            }
+        }
+
         constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 5000) {
             super("tank" + playerNumber);
-            this._fireDelayFactor = 1;
+            this._origFireDelayFactor = 1;
+            this._fireDelayFactor = this._origFireDelayFactor;
             this.x = x;
             this.y = y;
             this._startPoint = new util.Vector2(this.x, this.y);
             this.scaleX = scale;
             this.scaleY = scale;
             this._turret = turret;
-//            this._initialize();
+            //            this._initialize();
             this._playerIndex = playerNumber - 1;
             this._speed = 0.5;
             this._origSpeed = 0.5;
@@ -88,7 +102,9 @@ module objects {
             return true;
         }
 
-        public Reset(): void {
+        public Reset(health: number = 3): void {
+            this._origHealth = health;
+            this._health = this._origHealth;
             this.x = this._startPoint.x;
             this.y = this._startPoint.y;
         }
@@ -102,10 +118,13 @@ module objects {
 
 
         public FireUp() {
-            this._fireDelayFactor *= 0.75;
+            if (this._fireDelayFactor > this._origFireDelayFactor / 3) {
+                this._fireDelayFactor *= 0.75;
+            }
         }
-      
+
         public Stun() {
+            this.Health--;
             if (!this._stunned) {
                 this._stunned = true;
                 this._turret.alpha = 0.5;
@@ -246,7 +265,7 @@ module objects {
                     if (util.Vector2.ManhatDistance(bullet.Position, this._enemy.Position) < (this._enemy.Height * this.scaleY * 25)) {
                         if (managers.Collision.isCollidingWithCircle(this._enemy, bullet)) {
                             if (!this._enemy.IsStunned) {
-                                if(bullet.GetType() == 2) {
+                                if (bullet.GetType() == 2) {
                                     this._enemy.Stun();
                                 }
                             }
@@ -255,12 +274,12 @@ module objects {
                     }
                 }
             });
-            
+
             this._turret.Sync(this.x - (this._forward.x * this._turretOffset), this.y - (this._forward.y * this._turretOffset), this.rotation);
         }
 
         public Destroy(): void {
-            
+
         }
 
     }

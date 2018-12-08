@@ -4,7 +4,8 @@ var objects;
         constructor(playerNumber, x, y, scale, turret, stunDelay = 5000) {
             super("tank" + playerNumber);
             this._shootDelay = [0, 0, 0];
-            this._fireDelayFactor = 1;
+            this._origFireDelayFactor = 1;
+            this._fireDelayFactor = this._origFireDelayFactor;
             this.x = x;
             this.y = y;
             this._startPoint = new util.Vector2(this.x, this.y);
@@ -30,6 +31,15 @@ var objects;
         }
         get Bullets() {
             return this._bullets;
+        }
+        get Health() {
+            return this._health;
+        }
+        set Health(newHealth) {
+            this._health = newHealth;
+            if (this._health < 1) {
+                this.Reset();
+            }
         }
         _isPassable(action, xDelta = 0, yDelta = 0) {
             let forward = this._forward;
@@ -60,7 +70,9 @@ var objects;
             }
             return true;
         }
-        Reset() {
+        Reset(health = 3) {
+            this._origHealth = health;
+            this._health = this._origHealth;
             this.x = this._startPoint.x;
             this.y = this._startPoint.y;
         }
@@ -71,9 +83,12 @@ var objects;
             }
         }
         FireUp() {
-            this._fireDelayFactor *= 0.75;
+            if (this._fireDelayFactor > this._origFireDelayFactor / 3) {
+                this._fireDelayFactor *= 0.75;
+            }
         }
         Stun() {
+            this.Health--;
             if (!this._stunned) {
                 this._stunned = true;
                 this._turret.alpha = 0.5;
