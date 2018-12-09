@@ -45,8 +45,8 @@ var config;
             ["Numpad7", "Comma", "2B1"],
             ["Numpad9", "Period", "1B1"],
             ["Numpad1", "KeyB", "6B1"],
-            ["Numpad2", "KeyN", "7B1"],
             ["Numpad3", "KeyM", "0B1"],
+            ["Numpad2", "KeyN", "7B1"],
         ],
     ];
     config.BUMPERS = [

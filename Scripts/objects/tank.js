@@ -1,7 +1,7 @@
 var objects;
 (function (objects) {
     class Tank extends objects.GameObject {
-        constructor(playerNumber, x, y, scale, turret, stunDelay = 5000, health = 3) {
+        constructor(playerNumber, x, y, scale, turret, stunDelay = 1200, health = 3) {
             super("tank" + playerNumber);
             this._shootDelay = [0, 0, 0];
             this._origFireDelayFactor = 1;
@@ -12,7 +12,6 @@ var objects;
             this.scaleX = scale;
             this.scaleY = scale;
             this._turret = turret;
-            //            this._initialize();
             this._playerIndex = playerNumber - 1;
             this._speed = 0.5;
             this._origSpeed = 0.5;

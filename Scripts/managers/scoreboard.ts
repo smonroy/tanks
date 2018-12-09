@@ -1,9 +1,5 @@
 module managers {
     export class ScoreBoard {
-        // private _score:number;
-        // private _lives:number;
-        // private _highScore:number;
-
         private _p1Bases:number;
         private _p2Bases:number;
         private _p1Victories:number;
@@ -14,10 +10,6 @@ module managers {
         private _p1VictoriesLabel:objects.Label;
         private _p2VictoriesLabel:objects.Label;
     
-        // private _scoreLabel:objects.Label;
-        // private _livesLabel:objects.Label;
-        // private _highScoreLabel:objects.Label;        
-
         get _P1Bases():number {
             return this._p1Bases;
         }

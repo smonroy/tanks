@@ -19,6 +19,7 @@
         {id:"boxHit", src:"./Assets/audio/destruction-wooden_v2.wav"},
         {id:"powerupSound", src:"./Assets/audio/reload.ogg"},
         {id:"explodeSound", src:"./Assets/audio/explosion.wav"},
+        {id:"backgroundMusic", src:"./Assets/audio/backgroundMusic.mp3"},
         {id:"background1", src:"./Assets/Images/background1.jpg"},
         {id:"background2", src:"./Assets/Images/background2.jpg"},
         {id:"background3", src:"./Assets/Images/background3.jpg"},

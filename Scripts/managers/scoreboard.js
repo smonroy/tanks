@@ -9,9 +9,6 @@ var managers;
             this._P1Victories = p1Victories;
             this._P2Victories = p2Victories;
         }
-        // private _scoreLabel:objects.Label;
-        // private _livesLabel:objects.Label;
-        // private _highScoreLabel:objects.Label;        
         get _P1Bases() {
             return this._p1Bases;
         }

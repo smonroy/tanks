@@ -43,7 +43,7 @@ module objects {
             }
         }
 
-        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 5000, health: number = 3) {
+        constructor(playerNumber: number, x: number, y: number, scale: number, turret: objects.Turret, stunDelay: number = 1200, health: number = 3) {
             super("tank" + playerNumber);
             this._origFireDelayFactor = 1;
             this._fireDelayFactor = this._origFireDelayFactor;
@@ -53,7 +53,6 @@ module objects {
             this.scaleX = scale;
             this.scaleY = scale;
             this._turret = turret;
-            //            this._initialize();
             this._playerIndex = playerNumber - 1;
             this._speed = 0.5;
             this._origSpeed = 0.5;

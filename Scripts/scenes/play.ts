@@ -3,6 +3,7 @@ module scenes {
 
         private _map: objects.Map;
         private _level: number;
+        private _backgroundMusic:createjs.AbstractSoundInstance;
 
         constructor() {
             super();
@@ -34,6 +35,7 @@ module scenes {
 
         public Destroy(): void {
             this.removeAllChildren();
+            this._backgroundMusic.stop();
         };
 
         public Reset(): void {
@@ -45,6 +47,10 @@ module scenes {
         };
 
         public Main(): void {
+            this._backgroundMusic = createjs.Sound.play("backgroundMusic");
+            this._backgroundMusic.volume = 0.1;
+            this._backgroundMusic.loop = 1;
+
             managers.Game.scoreBoard.AddPlayUI(this);
         };
 

@@ -40,9 +40,8 @@ module config {
             ["Numpad7", "Comma", "2B1"],                    // ShootLeft
             ["Numpad9", "Period", "1B1"],                   // ShootRight
             ["Numpad1", "KeyB", "6B1"],                     // TurretLeft
-            ["Numpad2", "KeyN", "7B1"],                     // TurretShoot
             ["Numpad3", "KeyM", "0B1"],                     // TurretRight
-
+            ["Numpad2", "KeyN", "7B1"],                     // TurretShoot
         ],
     ];
 

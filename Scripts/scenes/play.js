@@ -29,6 +29,7 @@ var scenes;
         ;
         Destroy() {
             this.removeAllChildren();
+            this._backgroundMusic.stop();
         }
         ;
         Reset() {
@@ -40,6 +41,9 @@ var scenes;
         }
         ;
         Main() {
+            this._backgroundMusic = createjs.Sound.play("backgroundMusic");
+            this._backgroundMusic.volume = 0.1;
+            this._backgroundMusic.loop = 1;
             managers.Game.scoreBoard.AddPlayUI(this);
         }
         ;
